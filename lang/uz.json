@@ -1,0 +1,67 @@
+{
+  "card": {
+    "not_found": "Karta topilmadi",
+    "available_card_not_found": "Hozirgi paytda to'lov uchun karta mavjud emas",
+    "exists": "Karta avaldan mavjud",
+    "removed": "Karta o'chirildi",
+    "connected": "Karta ulandi",
+    "telegram_not_found": "Telegramdagi karta topilmadi"
+  },
+  "validation": {
+    "must_have_fields": "Quydagi maydonlar talab qilinadi: "
+  },
+  "user": {
+    "no_user_in_header": "Usersiz kirish mumkun emas",
+    "not_found": "Foydalanuvchi topilmadi",
+    "required_this_statuses": "{statuses} quydagi statuslar mumkun",
+    "updated_status": "Foydalanuvchi statusi={status}"
+  },
+  "transaction": {
+    "not_found": "Tranzaksiya topilmadi",
+    "updated_status": "Transzaksiya statusi o'zgartirildi",
+    "not_available_update_status": "Bu tranzaksiya Statusini ozgartira olmaysiz, Harakat bajarib bo'lingan",
+    "send_checking": "Tekshruvga jo'natildi 10-30 daqiqada javob olasiz",
+    "rejected": "Tranzaksiya bekor qilindi",
+    "balance_not_enough": "Hisobda pul yetarli emas",
+    "invalid_amount": "Noto'g'ri qiymat miqdori"
+  },
+  "provider": {
+    "not_found": "Provider topilmadi",
+    "updated": "Provider Yangilandi",
+    "deleted": "Provider O'chirildi",
+    "not_found_from_api": "Provider bilan aloqa o'rnatib bo'lmadi, malumotlarni qayta tekshiring",
+    "min_max": "Minimal {min}, Maksimal {max}. Chagarali",
+    "user_balance_not_enough": "Hisobingizdagi mablag' yetarli emas: {amount} so'm",
+    "error_provider_balance": "Provider xatoligi! Muammo tez oraqada tog'irlanadi, keyinroq urinib ko'ring",
+    "unknown_error": "Nomalum xatolik",
+    "success_deposit": "{provider} hisobingizga {amount} miqdorda pul to'ldirildi",
+    "success_withdraw": "{provider} hisobinigzdan {amount} pul yechildi",
+    "five_minute_limit_deposit": "{provider} uchun to'lov qilish {minute}.{second} minut dan keyin xarakat qiling.",
+    "pending_withdraw_contora": "Pul solish mumkun emas! Sizda chiqarish uchun ariza mavjud",
+    "not_found_payout_request": "Chiqarish so'rovi topilmadi"
+  },
+  "telegram": {
+    "code_send": "Telegramga kod yuborildi",
+    "card_xabar_not_working": "CardXabar Bot Ishlamayapdi",
+    "session_not_active": "Sessiya bilan aloqa yoq",
+    "not_found": "Telegram User topilmadi",
+    "buttons_invalid": "Tugmalar yaroqli emas",
+    "message_queued_successfully": "telegram.message_queued_successfully"
+  },
+  "player": {
+    "not_found": "O'yinchi hisob topilmadi"
+  },
+  "user_balance_not_enough": "user_balance_not_enough",
+  "payout": {
+    "not_found_payout_request": "payout.not_found_payout_request"
+  },
+  "file": {
+    "not_found": "Fayl topilmadi"
+  },
+  "role": {
+    "already_exists": "Bu ro'l mavjud",
+    "success_assigned": "Lavozim berish tasdiqlandi",
+    "success_dis_assigned": "Lavozim bekor qilindi",
+    "no_access_method": "\uD83D\uDEAB Bu amalni barajishga hquqingiz yo'q"
+  }
+}

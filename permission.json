@@ -1,0 +1,104 @@
+[
+  {
+    "name": "system-card-create",
+    "desc": "Sistemada karta yaratish",/
+    "module_id": 3
+  },
+  {
+    "name": "system-card-get-all",
+    "desc": "Sistemadagi kartalarni ko'rish",/
+    "module_id": 3
+  },
+  {
+    "name": "system-card-delete",
+    "desc": "Sistemadagi kartani o'chirish",/
+    "module_id": 3
+  },
+  {
+    "name": "system-card-update",
+    "desc": "Sistemadagi kartani o'zkartirish",/
+    "module_id": 3
+  },
+  {
+    "name": "view-user-cards",
+    "desc": "Userning kartalarini ko'rish",
+    "module_id": 3
+  },
+  {
+    "name": "provider-create",
+    "desc": "Providerni yaratish",/
+    "module_id": 4
+  },
+  {
+    "name": "provider-delete",/
+    "desc": "Providerni O'chirish",
+    "module_id": 4
+  },
+  {
+    "name": "provider-get-all",/
+    "desc": "Providerlar ro'yxatini ko'rish",
+    "module_id": 4
+  },
+  {
+      "name": "provider-update",/
+    "desc": "Providerni yangilash",
+    "module_id": 4
+  },
+  {
+    "name": "telegram-connect-account",
+    "desc": "Telegram accountni sistemaga ulash",/
+    "module_id": 5
+  },
+
+  {
+    "name": "telegram-get-cards",
+    "desc": "Card Xabardagi kartalarni ko'rish",/
+    "module_id": 5
+  },
+  {
+    "name": "connect-card-to-system-card",/
+    "desc": "CardXabar botdagi kartani sistema kartasi bilan ulash",
+    "module_id": 5
+  },
+  {
+    "name": "view-telegram-account",/
+    "desc": "Telegram userlar ro'yxatini ko'rish",
+    "module_id": 5
+  },
+  {
+    "name": "delete-telegram-account",/
+    "desc": "Sistemadan telegram accountni o'chirish",
+    "module_id": 5
+  },
+  {
+    "name": "deposit-wallet",/
+    "desc": "User hisobini ruchnoy to'ldirish",
+    "module_id": 2
+  },
+  {
+    "name": "view-all-transaction",/
+    "desc": "Barcha tranzaksiyalarni ko'rish",
+    "module_id": 2
+  },
+  {
+    "name": "accept-reject-transaction",/
+    "desc": "Hamyon Tranzaksiyani tasdiqlash va bekor qilish",
+    "module_id": 2
+  },
+
+  {
+    "name": "view-all-users",
+    "desc": "Tizim va Bot userlarini ko'rish",/
+    "module_id": 2
+  },
+  {
+    "name": "send-telegram-message",/
+    "desc": "Telegram botga xabar jonatish",
+    "module_id": 2
+  },
+  {
+    "name": "view-messages-history",
+    "desc": "Telegramga yuborilayotgan xabarlarini ko'rish",
+    "module_id": 2
+  }
+]

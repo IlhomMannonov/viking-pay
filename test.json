@@ -1,0 +1,13 @@
+{
+  Summa: -11500,
+  OperationId: 4905374087,
+  Success: true,
+  Message: 'Операция выполнена успешно'
+}
+{
+  "payout": {
+    "Success": false,
+    "MessageId": 100548,
+    "Message": "Запрос на выплату был отклонен. "
+  }
+}
