@@ -91,6 +91,33 @@ export const getFile = async (req: Request, res: Response, next: NextFunction): 
         res.status(500).json({message: 'Faylni olishda xato yuz berdi'});
     }
 };
+export const getFileById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+        const file_id = req.params.id;
+
+        if (!file_id) {
+            throw RestException.badRequest("file_id is required");
+        }
+        const attachment = await attachmentRepository.findOne({where: {id: Number(file_id)}});
+
+        if (!attachment) {
+            throw RestException.notFound("ATTACHMENT");
+        }
+
+        const filename = attachment.file_name; // URL'dan fayl nomini olish
+        const filePath = path.join('/root/viking_files', filename);
+        // Fayl mavjudligini tekshirish
+        if (!fs.existsSync(filePath)) {
+            res.status(404).json({message: 'Fayl topilmadi!'});
+        }
+
+        // Faylni yuborish
+        res.sendFile(filePath);
+    } catch (error) {
+        console.error('Faylni olishda xato:', error);
+        res.status(500).json({message: 'Faylni olishda xato yuz berdi'});
+    }
+};
 
 
 const storage = multer.diskStorage({

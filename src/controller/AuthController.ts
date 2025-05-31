@@ -104,7 +104,41 @@ export const login = async (req: Request, res: Response, next: NextFunction): Pr
         next(err); // Xatolikni keyingi middleware-ga yuborish
     }
 };
+export const login_tg = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+    const chat_id = req.params.chat_id;
+        const user = await userRepository.findOne({where: {chat_id: chat_id}});
 
+        if (!user) {
+            res.status(401).json({message: "Foydalanuvchi yoki parol noto‘g‘ri!", success: false});
+            return;
+        }
+
+        if (!JWT_SECRET) {
+            res.status(500).json({message: "Serverda muammo bor. Iltimos, keyinroq urinib ko‘ring.", success: false});
+            return;
+        }
+
+        const token = jwt.sign(
+            {
+                id: user.id,
+                phone_number: user.phone_number,
+            },
+            JWT_SECRET
+        );
+        res.status(200).json({
+            success: true,
+            message: "Muvaffaqiyatli login!",
+            token,
+            user: {
+                id: user.id,
+                phone_number: user.phone_number,
+            },
+        });
+    } catch (err) {
+        next(err)
+    }
+}
 
 
 // export const payme_login = async (req: Request, res: Response, next: NextFunction): Promise<void> => {

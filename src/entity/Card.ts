@@ -40,4 +40,8 @@ export class Card extends BaseEntityFull {
     @Column({type: 'text', nullable: true})
     card_hold!: string;
 
+
+    @Column({type: 'text', nullable: true})
+    card_img!: string;
+
 }

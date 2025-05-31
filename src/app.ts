@@ -17,6 +17,7 @@ import telegramAccountRouter from "./routers/TelegramAccountRouter";
 import transactionProviderRouter from "./routers/TransactionProviderRouter";
 import fileRouter from "./routers/FileRouter";
 import rolePermissionRouter from "./routers/RolePermissionRouter";
+import cors from "cors";
 
 
 const app: Application = express();
@@ -24,6 +25,7 @@ const app: Application = express();
 app.use(i18.init);
 app.use(morgan('dev'));
 app.use(bodyParser.json());
+app.use(cors());
 
 
 app.use('/telegram', authenticateToken, mainBotRouter);

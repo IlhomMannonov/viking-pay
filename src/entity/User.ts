@@ -24,6 +24,9 @@ export class User extends BaseEntityFull {
     @Column({type: 'timestamp', nullable: true})
     last_login_time!: Date;
 
+    @Column({type: 'timestamp', nullable: true})
+    birthday!: Date;
+
     @Column({type: 'boolean', default: false})
     phone_verified!: boolean;
 

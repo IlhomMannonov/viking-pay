@@ -21,7 +21,7 @@ echo Files uploaded. Extracting on server and starting project...
 
 REM SSH orqali serverda arxivni ochish va `node index.js` buyrug'ini ishga tushirish
 ssh %USERNAME%@%SERVER% "cd %REMOTE_DIR% && tar -xzvf dist.tar.gz && npm install && tsc "
-ssh %USERNAME%@%SERVER% "cd %REMOTE_DIR% && rm dist.tar.gz && cp .env dist/.env && pm2 stop index && pm2 start /root/viking_pay/dist/index.js --env production"
+ssh %USERNAME%@%SERVER% "cd %REMOTE_DIR% && rm dist.tar.gz && cp .env dist/.env && pm2 stop index && pm2 start /root/analizer/dist/index.js --env production"
 
 echo Project started on server.
 pause
