@@ -12,14 +12,15 @@ const cardRepository = AppDataSource.getRepository(Card);
 export const create = async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> => {
     try {
         validFields(['name', 'number', 'limit', 'status'], req.body);
-        const {name, number, limit, status} = req.body;
+        const {name, number, limit, status, card_img} = req.body;
 
         const newCard = cardRepository.create({
             name,
             number,
             limit: Number(limit),
             status: status,
-            is_user_card: false
+            is_user_card: false,
+            card_img
         });
         const result = await cardRepository.save(newCard);
         res.status(201).json(result);
@@ -50,6 +51,7 @@ export const getAll = async (req: Request, res: Response, next: NextFunction): P
                 "card.name",
                 "card.number",
                 "card.limit",
+                "card.card_img",
                 "card.created_at",
                 "card.status",
                 "card.card_hold",
@@ -91,7 +93,7 @@ export const update = async (req: Request, res: Response, next: NextFunction): P
 
 // DELETE
 export const remove = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    try {
+    try     {
 
         const card = await cardRepository.findOne({
             where: {

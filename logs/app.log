@@ -390,3 +390,5 @@
 [2025-05-12 21:29:05] [32minfo[39m: Fetched 2 users (page 1/1)
 [2025-05-15 14:37:46] [32minfo[39m: {"Summa":5000,"OperationId":4931550159,"Success":true}
 [2025-05-15 14:37:47] [32minfo[39m: 1 Foydalanuvchi BetWinner - ilhom Zubaydullo o’g’li m. O'yinchi hisobini 5000 ga to'ldirdi
+[2025-05-30 13:40:43] [32minfo[39m: {"Success":false,"MessageId":100329,"Message":"На данной кассе нельзя осуществить пополнение счета!"}
+[2025-05-30 13:40:43] [31merror[39m: CashDesk depozitdan xato bo'ldi yoki userni saqlashda

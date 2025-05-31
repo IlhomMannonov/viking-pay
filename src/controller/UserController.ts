@@ -53,7 +53,7 @@ export const get_user = async (req: AuthenticatedRequest, res: Response, next: N
         const user_id = req.params.user_id
         const user = await userRepository.findOne({
             where: {id: Number(user_id), deleted: false},
-            select: ['id', 'first_name', 'first_name', 'last_login_time', 'phone_number', 'phone_verified', 'chat_id', 'is_bot_user'],
+            select: ['id', 'first_name', 'first_name', 'last_login_time', 'phone_number', 'phone_verified', 'chat_id', 'is_bot_user', 'logo_id', 'birthday'],
         });
 
         if (!user) throw RestException.badRequest(__('user.not_found'));
@@ -140,7 +140,7 @@ export const all_users = async (req: AuthenticatedRequest, res: Response, next: 
 
 export const update_profile = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     try {
-        const {first_name, last_name, logo_id} = req.body;
+        const {first_name, last_name, logo_id, birthday} = req.body;
         if (!req.user) throw RestException.badRequest(__('user.no_user_in_header'))
 
         const user = req.user
@@ -148,6 +148,7 @@ export const update_profile = async (req: AuthenticatedRequest, res: Response, n
         if (first_name !== undefined) user.first_name = first_name;
         if (last_name !== undefined) user.last_name = last_name;
         if (logo_id !== undefined) user.logo_id = logo_id;
+        if (birthday !== undefined) user.birthday = birthday;
 
         await userRepository.save(user);
         user.password = undefined;

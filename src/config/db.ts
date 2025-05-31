@@ -11,6 +11,7 @@ import {Role} from "../entity/Role";
 import {Permission} from "../entity/Permission";
 import {Module} from "../entity/Module";
 import {seedInitialData, seedPermissions} from "../seed/InitialData";
+import {Slider} from "../entity/Slider";
 
 export const AppDataSource = new DataSource({
     type: 'postgres',
@@ -29,7 +30,8 @@ export const AppDataSource = new DataSource({
         TelegramMessage,
         Role,
         Permission,
-        Module
+        Module,
+        Slider
     ],
     synchronize: true,
 });

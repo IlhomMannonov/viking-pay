@@ -1,22 +1,22 @@
 [
   {
     "name": "system-card-create",
-    "desc": "Sistemada karta yaratish",/
+    "desc": "Sistemada karta yaratish",
     "module_id": 3
   },
   {
     "name": "system-card-get-all",
-    "desc": "Sistemadagi kartalarni ko'rish",/
+    "desc": "Sistemadagi kartalarni ko'rish",
     "module_id": 3
   },
   {
     "name": "system-card-delete",
-    "desc": "Sistemadagi kartani o'chirish",/
+    "desc": "Sistemadagi kartani o'chirish",
     "module_id": 3
   },
   {
     "name": "system-card-update",
-    "desc": "Sistemadagi kartani o'zkartirish",/
+    "desc": "Sistemadagi kartani o'zkartirish",
     "module_id": 3
   },
   {

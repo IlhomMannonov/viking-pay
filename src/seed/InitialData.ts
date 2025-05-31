@@ -84,7 +84,10 @@ export const seedPermissions = async (dataSource: DataSource) => {
         },
         {"name": "view-all-users", "desc": "Tizim va Bot userlarini ko'rish", "module_id": 2},
         {"name": "send-telegram-message", "desc": "Telegram botga xabar jonatish", "module_id": 2},
-        {"name": "view-messages-history", "desc": "Telegramga yuborilayotgan xabarlarini ko'rish", "module_id": 2}
+        {"name": "view-messages-history", "desc": "Telegramga yuborilayotgan xabarlarini ko'rish", "module_id": 2},
+        {"name": "add-slider", "desc": "Slider yaratish", "module_id": 7},
+        {"name": "update-slider", "desc": "Slider taxrirlash", "module_id": 7},
+        {"name": "delete-slider", "desc": "Sliderni o'chirish", "module_id": 7},
     ];
 
     for (const perm of permissions) {

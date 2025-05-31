@@ -17,12 +17,14 @@ export const create = async (req: AuthenticatedRequest, res: Response, next: Nex
         if (!req.user) throw RestException.badRequest(__('user.no_user_in_header'))
 
         validFields(['name', 'number'], req.body);
-        const {name, number} = req.body;
+
+        const {name, number, card_img} = req.body;
 
         const existingCard = await cardRepository.exists({where: {number: number, deleted: false, is_user_card: true}})
         if (existingCard) throw RestException.badRequest(__('card.exists'))
         const newCard = cardRepository.create({
             name,
+            card_img,
             number,
             is_user_card: true,
             user_id: req.user.id,
@@ -48,7 +50,7 @@ export const my_cards = async (req: AuthenticatedRequest, res: Response, next: N
             skip: offset,
             take: limit,
             order: {id: 'DESC'},
-            select: ['id', 'name', 'number', 'created_at', 'status'],
+            select: ['id', 'name', 'number', 'created_at', 'status', 'card_img'],
         });
 
         res.json({
@@ -119,7 +121,7 @@ export const user_cards = async (req: AuthenticatedRequest, res: Response, next:
             skip: offset,
             take: limit,
             order: {id: 'DESC'},
-            select: ['id', 'name', 'number', 'created_at', 'status'],
+            select: ['id', 'name', 'number', 'created_at', 'status','card_img'],
         });
 
         res.json({
