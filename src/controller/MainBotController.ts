@@ -9,16 +9,18 @@ const userRepository = AppDataSource.getRepository(User);
 
 bot.start(async (ctx) => {
     const user = await getBotUser(ctx.chat.id.toString());
-    // if (!user.last_name) {
-    //     await ctx.reply(
-    //         'Assalomu Alaykum Iltimos telefon raqamingizni yuboring',
-    //         Markup.keyboard([
-    //             Markup.button.contactRequest("📞 Telefon raqamni jo'narish")
-    //         ])
-    //             .resize()
-    //     );
-    // }
-    await userHome(ctx)
+    if (!user.last_name) {
+        await ctx.reply(
+            'Пожалуйста, отправьте свой номер телефона.',
+            Markup.keyboard([
+                Markup.button.contactRequest("📞 Отправить номер телефона")
+            ])
+                .resize()
+        );
+    }else{
+        await userHome(ctx)
+
+    }
 
 });
 
@@ -35,7 +37,7 @@ bot.on('contact', async (ctx) => {
     }
     user.phone_number = number;
     await userRepository.save(user);
-    await ctx.reply("To'liq ism familyangizni yuboring", Markup.removeKeyboard());
+    await ctx.reply("Отправьте свое полное имя и фамилию", Markup.removeKeyboard());
     // }
 });
 
@@ -60,7 +62,7 @@ bot.on("text", async (ctx) => {
             await updateUserState(ctx.chat.id.toString(), 'user_home');
         } else {
             // Tekshiruv muvaffaqiyatsiz
-            ctx.reply('Iltimos, ismingiz va familiyangizni to\'g\'ri kiriting. Ikkalasi ham kamida 3 harfdan iborat bo\'lishi kerak.');
+            ctx.reply('Пожалуйста, введите правильно свое имя и фамилию. Оба имени должны быть длиной не менее 3 букв.');
         }
     }
 })
@@ -68,27 +70,28 @@ export const userHome = async (ctx: Context) => {
     // const user = await getBotUser(ctx.chat.id.toString());
     // const payme = await paymeRepository.findOne({where: {user_id: user.id}})
     await ctx.reply(
-        "👋 Assalomu alaykum!\n" +
-        "🏴‍☠️ Xush kelibsiz Viking Pay botiga!\n" +
+        "👋 Приветствуем вас!\n" +
+        "🏴‍☠️ Добро пожаловать в бот Viking Pay!\n" +
         "\n" +
-        "💼 Bizning xizmat:\n" +
-        "🔁 Bokmekerlik saytlariga pul solib berish\n" +
-        "💸 Bokmekerlik saytlaridan pul yechib berish — tez, ishonchli va qulay tarzda!\n" +
+        "💼 Наши услуги:\n" +
+        "🔁 Пополнение счетов букмекерских сайтов\n" +
+        "💸 Вывод средств с букмекерских сайтов — быстро, надежно и удобно!\n" +
         "\n" +
-        "⚙️ Qanday ishlaymiz?\n" +
-        "1️⃣ Buyurtma yuborasiz\n" +
-        "2️⃣ Operatorlarimiz siz bilan bog‘lanadi\n" +
-        "3️⃣ Pul kerakli manzilga tushiriladi yoki yechib beriladi\n" +
+        "⚙️ Как мы работаем?\n" +
+        "1️⃣ Вы отправляете заявку\n" +
+        "2️⃣ Наши операторы связываются с вами\n" +
+        "3️⃣ Деньги пополняются или выводятся по вашему запросу\n" +
         "\n" +
-        "✅ 24/7 xizmat\n" +
-        "✅ Ishonchli va tezkor to‘lovlar\n" +
-        "✅ Eng ommabop to‘lov usullari\n" +
+        "✅ Работаем 24/7\n" +
+        "✅ Надежные и быстрые выплаты\n" +
+        "✅ Популярные способы оплаты\n" +
         "\n" +
-        "🚀 Ishni boshlash uchun pastdagi menyudan kerakli xizmat turini tanlang yoki “🆘 Boshlash” tugmasini bosing.",
+        "🚀 Чтобы начать, выберите нужную услугу из меню ниже или нажмите кнопку “🆘 Начать”.",
         Markup.inlineKeyboard([
-            [Markup.button.webApp("🆘 Boshlash", 'https://viking-pay.netlify.app/')],
+            [Markup.button.webApp("🆘 Начать", 'https://viking-pay.netlify.app/')],
         ])
     );
+
     // await ctx.reply("👆 Bu to'lov tizimlari orqali to'lov qilishingiz uchun avval to'lov accountlarinigzni faollashtiring", Markup.removeKeyboard())
 };
 export const getBotUser = async (chat_id: string): Promise<User> => {
