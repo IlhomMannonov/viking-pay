@@ -157,8 +157,7 @@ export const my_transactions = async (req: AuthenticatedRequest, res: Response, 
         for (const item of transactions) {
             (item as any).timer = item.status === 'pending_deposit' ? getTransTime(item) : 0;
         }
-
-        res.json({
+         res.json({
             data: transactions,
             pagination: {
                 total,

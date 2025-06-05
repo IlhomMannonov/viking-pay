@@ -39,7 +39,6 @@ export const verifyToken = async (req: Request, res: Response, next: NextFunctio
         return res.status(401).json({message: "Noto‘g‘ri yoki amal qilish muddati tugagan token."});
     }
 }
-
 export const verifyJwtToken = (permission: string | null = null) => {
     return async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
         const token = req.headers['authorization'];
@@ -60,30 +59,25 @@ export const verifyJwtToken = (permission: string | null = null) => {
 
         req.user = user;
 
-        // AGAR SUPER ADMIN BO'LSA SHUNDAY O'TKAZVORAMIZ
-        if (user.super_admin) next()
+        // ✅ Agar super admin bo‘lsa, boshqa kodlar ishlamasin
+        if (user.super_admin) return next();
 
-        // AGAR PERMISSIONLIK YOL BOLSA ISHLASIN
-
+        // PERMISSION tekshirish
         if (permission) {
             const role = await roleRepository.findOne({where: {id: Number(user.role_id)}});
-            if (!role) throw RestException.noPermission();
+            if (!role) return res.status(403).json({ message: "Ruxsat yo‘q" });
 
             const permission_ids = role.permissions;
-
-
             const pm = await permissionRepository.findOne({where: {name: permission, deleted: false}, select: ['id']});
-            if (!pm) throw RestException.noPermission();
+            if (!pm) return res.status(403).json({ message: "Ruxsat yo‘q" });
 
-
-            const hasPermission = permission_ids.includes(pm.id); // Yaxshiroq o‘qiladi
-
-            if (!hasPermission) {
-                throw RestException.noPermission(); // yoki res.status(403).json({ message: "Ruxsat yo'q" })
-            }
+            const hasPermission = permission_ids.includes(pm.id);
+            if (!hasPermission) return res.status(403).json({ message: "Ruxsat yo‘q" });
         }
-        next();
+
+        next(); // ✅ faqat barcha tekshiruvlardan o‘tgan bo‘lsa
     };
+
 };
 
 export function createToken(payload: any) {
