@@ -19,6 +19,7 @@ import fileRouter from "./routers/FileRouter";
 import rolePermissionRouter from "./routers/RolePermissionRouter";
 import cors from "cors";
 import sliderRouter from "./routers/SliderRouter";
+import statisticsRouter from "./routers/StatisticsRouter";
 
 
 const app: Application = express();
@@ -41,6 +42,7 @@ app.use('/api/v1/tr-provider', transactionProviderRouter);
 app.use('/api/v1/file', fileRouter);
 app.use('/api/v1/role-permission', rolePermissionRouter);
 app.use('/api/v1/slider', sliderRouter);
+app.use('/api/v1/statics', statisticsRouter);
 
 app.use(errorHandler);
 
