@@ -105,6 +105,8 @@ export const remove = async (req: Request, res: Response, next: NextFunction): P
 
         if (!card) throw RestException.notFound(__('card.not_found'))
 
+        card.deleted = true;
+       await cardRepository.save(card);
 
         res.status(204).send();
     } catch (err) {
