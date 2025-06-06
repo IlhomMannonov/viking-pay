@@ -148,7 +148,7 @@ export const update_profile = async (req: AuthenticatedRequest, res: Response, n
         if (first_name !== undefined) user.first_name = first_name;
         if (last_name !== undefined) user.last_name = last_name;
         if (logo_id !== undefined) user.logo_id = logo_id;
-        if (birthday !== undefined) user.birthday = birthday;
+        if (birthday !== undefined) user.birthday = new Date(birthday);
 
         await userRepository.save(user);
         user.password = undefined;
