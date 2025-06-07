@@ -171,6 +171,20 @@ export const my_transactions = async (req: AuthenticatedRequest, res: Response, 
             (item as any).timer = timer
         }
        await transactionRepository.save(updated_transactions);
+
+        const cardIds = updated_transactions
+            .filter(t => t.card_id)
+            .map(t => t.card_id)
+
+        const uniqueCardIds = [...new Set(cardIds)]
+
+        await AppDataSource
+            .createQueryBuilder()
+            .update(Card)
+            .set({ status: 'active' })
+            .whereInIds(uniqueCardIds)
+            .execute()
+
         res.json({
             data: transactions,
             pagination: {
