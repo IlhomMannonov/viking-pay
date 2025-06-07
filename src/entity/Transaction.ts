@@ -13,6 +13,10 @@ export class Transaction extends BaseEntityUUID {
     @Column({type: 'bigint', scale: 2, default: 0})
     amount!: number;
 
+    // XAQIY QIY TO'LOV SUMMASI
+    @Column({type: 'bigint', scale: 2, default: 0})
+    soft_amount!: number;
+
     // AGAR KDEPOZIT BOLAYOTGAN BOLSA KARTANI OXIRGI BALANSI SET QILINADI BU YERGA
     @Column({ type: 'numeric', precision: 12, scale: 2, default: 0 })
     last_card_amount!: number;

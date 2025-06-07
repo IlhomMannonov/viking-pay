@@ -67,6 +67,7 @@ async function transactionWorker() {
                     logger.info("✅ Pul to‘liq tushdi.");
                 } else {
                     transaction.status = 'partial_success';
+                    transaction.amount = realDeposited;
                     logger.info("⚠️ Pul qisman tushdi.");
                 }
             } else {

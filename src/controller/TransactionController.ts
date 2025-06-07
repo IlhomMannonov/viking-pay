@@ -30,6 +30,7 @@ export const create_deposit = async (req: AuthenticatedRequest, res: Response, n
 
         const tr = transactionRepository.create({
             amount: amount,
+            soft_amount: amount,
             user_id: req.user.id,
             card_id: card.card.id,
             card_number: card.card.number,

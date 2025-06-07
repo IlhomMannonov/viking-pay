@@ -108,6 +108,7 @@ export const deposit = async (req: AuthenticatedRequest, res: Response, next: Ne
 
             const tr = transactionRepository.create({
                 amount: amount,
+                soft_amount: amount,
                 user_id: user.id,
                 provider_id: provider.id,
                 type: "provider",
@@ -181,6 +182,7 @@ export const withdraw = async (req: AuthenticatedRequest, res: Response, next: N
             await AppDataSource.transaction(async (manager) => {
                 const tr = transactionRepository.create({
                     amount,
+                    soft_amount:amount,
                     user_id: user.id,
                     provider_id: provider.id,
                     type: "provider",
