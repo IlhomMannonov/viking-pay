@@ -108,7 +108,7 @@ export const remove = async (req: Request, res: Response, next: NextFunction): P
         card.deleted = true;
        await cardRepository.save(card);
 
-        res.status(204).send();
+        res.status(200).json({success: true});
     } catch (err) {
         next(err);
     }

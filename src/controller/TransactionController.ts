@@ -11,6 +11,8 @@ import logger from '../config/logger';
 import {Not} from "typeorm";
 import {User} from "../entity/User";
 import {RabbitMQService} from "../service/MQServise";
+import {ifError} from "node:assert";
+import * as timers from "node:timers";
 
 const transactionRepository = AppDataSource.getRepository(Transaction);
 const cardRepository = AppDataSource.getRepository(Card);
@@ -153,11 +155,23 @@ export const my_transactions = async (req: AuthenticatedRequest, res: Response, 
 
         const [transactions, total] = await queryBuilder.getManyAndCount();
 
+
+        let updated_transactions =[]
         // Timer calculation
         for (const item of transactions) {
-            (item as any).timer = item.status === 'pending_deposit' ? getTransTime(item) : 0;
+            let timer = 0
+            if (item.status === 'pending_deposit') {
+                timer =  getTransTime(item)
+
+                if (timer==0){
+                    item.status = 'reject'
+                    updated_transactions.push(item)
+                }
+            }
+            (item as any).timer = timer
         }
-         res.json({
+       await transactionRepository.save(updated_transactions);
+        res.json({
             data: transactions,
             pagination: {
                 total,

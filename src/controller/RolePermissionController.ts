@@ -203,7 +203,50 @@ export const assign_to_user = async (req: AuthenticatedRequest, res: Response, n
     }
 }
 
+export const get_user_modules = async(role_id:number) => {
+    const role = await roleRepository.findOne({where: {id: role_id, deleted: false}});
+    if (!role) throw RestException.notFound('Role not found');
 
+
+    // Barcha modullarni permissions bilan birga olish
+    const all_modules = await moduleRepository
+        .createQueryBuilder('m')
+        .leftJoinAndSelect('m.permissions_list', 'p')
+        .where('m.deleted = false')
+        .select([
+            'm.id',
+            'm.name',
+            'm.module_id',
+            'm.order_index',
+            'p.id',
+            'p.name',
+            'p.desc',
+            'p.module_id',
+        ])
+        .orderBy('m.order_index', 'ASC')
+        .getMany();
+    return all_modules
+        .filter(m => !m.module_id) // faqat ota modullar
+        .map(module => {
+            const submodules = all_modules
+                .filter(sm => sm.module_id === module.id)
+                .map(sm => ({
+                    id: sm.id,
+                    name: sm.name,
+                    check: role.modules.includes(sm.id),
+                    order_index: sm.order_index,
+                }));
+
+            return {
+                id: module.id,
+                name: module.name,
+                check: role.modules.includes(module.id),
+                order_index: module.order_index,
+                submodules,
+            };
+        });
+
+}
 // Ota modullarni topish
 // const modulesWithSubmodules = modules
 //     .filter(m => !m.module_id) // faqat ota modullar

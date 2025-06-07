@@ -7,6 +7,7 @@ import {Transaction} from "../entity/Transaction";
 import {validFields} from "../utils/CustomErrors";
 
 const userRepository = AppDataSource.getRepository(User);
+const transactionRepository = AppDataSource.getRepository(Transaction);
 const providerRepository = AppDataSource.getRepository(Provider);
 export const user_main_statics = async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> => {
     try {
@@ -43,4 +44,8 @@ export const user_main_statics = async (req: AuthenticatedRequest, res: Response
     } catch (err) {
         next(err)
     }
+}
+
+export const dashboard = async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> => {
+    transactionRepository
 }

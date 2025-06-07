@@ -10,6 +10,7 @@ import {validFields} from "../utils/CustomErrors";
 import {Attachment} from "../entity/Attachment";
 import {RabbitMQService} from "../service/MQServise";
 import {TelegramMessage} from "../entity/TelegramMessage";
+import {get_user_modules} from "./RolePermissionController";
 
 const userRepository = AppDataSource.getRepository(User);
 const cardRepository = AppDataSource.getRepository(Card);
@@ -24,7 +25,10 @@ export const me = async (req: AuthenticatedRequest, res: Response, next: NextFun
         if (!req.user) throw RestException.badRequest(__('user.no_user_in_header'))
         req.user.password = null
 
-
+        console.log(req.user.role_id);
+        if (req.user.role_id){
+            req.user.modules = await get_user_modules(req.user.role_id);
+        }
         res.status(200).send({
             success: true, data: {
                 id: req.user.id,
@@ -36,6 +40,7 @@ export const me = async (req: AuthenticatedRequest, res: Response, next: NextFun
                 chat_id: req.user.chat_id,
                 is_bot_user: req.user.is_bot_user,
                 amount: req.user.amount,
+                modules: req.user.modules,
             }
         });
 
@@ -51,7 +56,7 @@ export const get_user = async (req: AuthenticatedRequest, res: Response, next: N
         if (!req.user) throw RestException.badRequest(__('user.no_user_in_header'));
 
         const user_id = req.params.user_id
-        const user = await userRepository.findOne({
+        const user:any = await userRepository.findOne({
             where: {id: Number(user_id), deleted: false},
             select: ['id', 'first_name', 'first_name', 'last_login_time', 'phone_number', 'phone_verified', 'chat_id', 'is_bot_user', 'logo_id', 'birthday'],
         });
@@ -66,6 +71,7 @@ export const get_user = async (req: AuthenticatedRequest, res: Response, next: N
             },
             select: ['name', 'number', 'id']
         });
+
 
         res.status(200).send({success: true, data: {user: user, user_cards: user_cards}});
     } catch (err) {

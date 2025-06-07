@@ -10,7 +10,7 @@ router.route("/create")
 router.route("/update/:id")
 .put(verifyJwtToken('update-slider'), update);
 
-router.route("/delete/:id")
+router.route("/remove/:id")
 .delete(verifyJwtToken('delete-slider'), remove);
 
 router.route("/all")

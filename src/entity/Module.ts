@@ -1,4 +1,4 @@
-import {Column, Entity, JoinColumn, ManyToOne, OneToMany} from 'typeorm';
+    import {Column, Entity, JoinColumn, ManyToOne, OneToMany} from 'typeorm';
 import {BaseEntityFull} from "./template/BaseEntityFull";
 import {User} from "./User";
 import {TgAccount} from "./TgAccount";
