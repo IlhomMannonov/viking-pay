@@ -395,3 +395,22 @@
 [2025-06-07 11:10:00] [32minfo[39m: Fetched 4 users (page 1/1)
 [2025-06-07 11:10:10] [32minfo[39m: Fetched 6 users (page 1/1)
 [2025-06-07 11:10:21] [32minfo[39m: Fetched 4 users (page 1/1)
+[2025-06-07 23:31:10] [32minfo[39m: 6 - foydalanuvchi 10000 miqdorida depozit qilmoqda
+[2025-06-07 23:31:11] [32minfo[39m: 10000 miqdori uchun karta mavjud emas
+[2025-06-07 23:34:29] [32minfo[39m: 📊 Oldingi balans: 32600
+[2025-06-07 23:34:29] [32minfo[39m: 💰 Hozirgi balans: 40600
+[2025-06-07 23:34:29] [32minfo[39m: 💸 Tranzaksiya miqdori: 10000
+[2025-06-07 23:34:29] [32minfo[39m: ➕ Real tushgan pul: 8000
+[2025-06-07 23:34:30] [32minfo[39m: 07f20160-4eac-46f0-a47d-2c56221fa9af - Tranzaksiya bo'yicha 1 - Foydalanuvchisiga, 8000 so'm Depozit o'tkazildi, 10000 So'm, Belgilanganan summadan tashqari miqdor
+[2025-06-07 23:34:30] [32minfo[39m: ⚠️ Pul qisman tushdi.
+[2025-06-07 23:42:32] [32minfo[39m: 📊 Oldingi balans: 40600
+[2025-06-07 23:42:32] [32minfo[39m: 💰 Hozirgi balans: 40600
+[2025-06-07 23:42:32] [32minfo[39m: 💸 Tranzaksiya miqdori: 10000
+[2025-06-07 23:42:32] [32minfo[39m: ➕ Real tushgan pul: 0
+[2025-06-07 23:42:32] [32minfo[39m: ❌ Pul tushmagan.
+[2025-06-07 23:44:25] [32minfo[39m: 📊 Oldingi balans: 40600
+[2025-06-07 23:44:25] [32minfo[39m: 💰 Hozirgi balans: 42600
+[2025-06-07 23:44:25] [32minfo[39m: 💸 Tranzaksiya miqdori: 1000
+[2025-06-07 23:44:25] [32minfo[39m: ➕ Real tushgan pul: 2000
+[2025-06-07 23:44:25] [32minfo[39m: 73cb9221-00db-426c-8700-3315ec0ee2a9 - Tranzaksiya bo'yicha 1 - Foydalanuvchisiga, 2000 so'm Depozit o'tkazildi, 1000 So'm, Belgilanganan summadan tashqari miqdor
+[2025-06-07 23:44:25] [32minfo[39m: ⚠️ Pul qisman tushdi.
