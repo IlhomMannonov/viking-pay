@@ -41,6 +41,7 @@ export const me = async (req: AuthenticatedRequest, res: Response, next: NextFun
                 is_bot_user: req.user.is_bot_user,
                 amount: req.user.amount,
                 modules: req.user.modules,
+                birthday: req.user.birthday,
             }
         });
 
