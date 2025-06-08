@@ -13,6 +13,10 @@ import {User} from "../entity/User";
 import {RabbitMQService} from "../service/MQServise";
 import {ifError} from "node:assert";
 import * as timers from "node:timers";
+import {groupBy} from 'lodash'; // kerak bo‘lsa o‘rnat: npm i lodash
+
+
+
 
 const transactionRepository = AppDataSource.getRepository(Transaction);
 const cardRepository = AppDataSource.getRepository(Card);
@@ -100,7 +104,7 @@ export const complete_pay = async (req: AuthenticatedRequest, res: Response, nex
     }
 }
 
-//USERNING SHAXSIY TRANZAKSIYALARI
+
 export const my_transactions = async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> => {
     try {
         if (!req.user) throw RestException.badRequest(__('user.no_user_in_header'));
@@ -119,15 +123,15 @@ export const my_transactions = async (req: AuthenticatedRequest, res: Response, 
         const queryBuilder = transactionRepository
             .createQueryBuilder('transaction')
             .leftJoinAndSelect('transaction.provider', 'provider')
-            .where('transaction.user_id = :userId', {userId})
+            .where('transaction.user_id = :userId', { userId })
             .andWhere('transaction.deleted = false');
 
         if (fromDate && toDate) {
-            queryBuilder.andWhere('transaction.created_at BETWEEN :fromDate AND :toDate', {fromDate, toDate});
+            queryBuilder.andWhere('transaction.created_at BETWEEN :fromDate AND :toDate', { fromDate, toDate });
         } else if (fromDate) {
-            queryBuilder.andWhere('transaction.created_at >= :fromDate', {fromDate});
+            queryBuilder.andWhere('transaction.created_at >= :fromDate', { fromDate });
         } else if (toDate) {
-            queryBuilder.andWhere('transaction.created_at <= :toDate', {toDate});
+            queryBuilder.andWhere('transaction.created_at <= :toDate', { toDate });
         }
 
         queryBuilder
@@ -156,38 +160,47 @@ export const my_transactions = async (req: AuthenticatedRequest, res: Response, 
 
         const [transactions, total] = await queryBuilder.getManyAndCount();
 
+        let updated_transactions = [];
 
-        let updated_transactions =[]
-        // Timer calculation
         for (const item of transactions) {
-            let timer = 0
+            let timer = 0;
             if (item.status === 'pending_deposit') {
-                timer =  getTransTime(item)
+                timer = getTransTime(item);
 
-                if (timer==0){
-                    item.status = 'reject'
-                    updated_transactions.push(item)
+                if (timer === 0) {
+                    item.status = 'reject';
+                    updated_transactions.push(item);
                 }
             }
-            (item as any).timer = timer
+            (item as any).timer = timer;
         }
-       await transactionRepository.save(updated_transactions);
 
-        const cardIds = updated_transactions
-            .filter(t => t.card_id)
-            .map(t => t.card_id)
+        await transactionRepository.save(updated_transactions);
 
-        const uniqueCardIds = [...new Set(cardIds)]
+        const cardIds = updated_transactions.filter(t => t.card_id).map(t => t.card_id);
+        const uniqueCardIds = [...new Set(cardIds)];
 
-        await AppDataSource
-            .createQueryBuilder()
-            .update(Card)
-            .set({ status: 'active' })
-            .whereInIds(uniqueCardIds)
-            .execute()
+        if (uniqueCardIds.length) {
+            await AppDataSource
+                .createQueryBuilder()
+                .update(Card)
+                .set({ status: 'active' })
+                .whereInIds(uniqueCardIds)
+                .execute();
+        }
+
+        // === Guruhlash: Sanaga qarab ===
+        const grouped = groupBy(transactions, (t:Transaction) =>
+            new Date(t.created_at).toISOString().split('T')[0]
+        );
+
+        const formatted = Object.entries(grouped).map(([date, txns]) => ({
+            date,
+            transactions: txns
+        }));
 
         res.json({
-            data: transactions,
+            data: formatted,
             pagination: {
                 total,
                 page,
@@ -199,6 +212,7 @@ export const my_transactions = async (req: AuthenticatedRequest, res: Response, 
         next(err);
     }
 };
+
 
 //USER HISOBIGA DEPOZITINI TASDIQLAYDI YOKI BEKOR QILADI
 export const update_transaction = async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> => {
