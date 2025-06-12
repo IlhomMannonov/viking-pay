@@ -88,7 +88,7 @@ export const userHome = async (ctx: Context) => {
         "\n" +
         "🚀 Чтобы начать, выберите нужную услугу из меню ниже или нажмите кнопку “🆘 Начать”.",
         Markup.inlineKeyboard([
-            [Markup.button.webApp("🆘 Начать", `https://viking-pay.netlify.app?chat_id=${ctx.chat.id.toString()}`)],
+            [Markup.button.webApp("🆘 Начать", `https://viking-pay.com`)],
         ])
     );
 

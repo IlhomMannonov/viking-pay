@@ -414,3 +414,5 @@
 [2025-06-07 23:44:25] [32minfo[39m: ➕ Real tushgan pul: 2000
 [2025-06-07 23:44:25] [32minfo[39m: 73cb9221-00db-426c-8700-3315ec0ee2a9 - Tranzaksiya bo'yicha 1 - Foydalanuvchisiga, 2000 so'm Depozit o'tkazildi, 1000 So'm, Belgilanganan summadan tashqari miqdor
 [2025-06-07 23:44:25] [32minfo[39m: ⚠️ Pul qisman tushdi.
+[2025-06-09 12:19:47] [32minfo[39m: {"Success":false,"MessageId":100365,"Message":"Касса удалена! Доступ запрещен!"}
+[2025-06-09 12:19:47] [31merror[39m: CashDesk depozitdan xato bo'ldi yoki userni saqlashda

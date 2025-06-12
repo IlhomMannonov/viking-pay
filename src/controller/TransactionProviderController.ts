@@ -25,7 +25,7 @@ export const check_id = async (req: AuthenticatedRequest, res: Response, next: N
 
         const cashdesk = new CashDesk(provider.api, provider.hash, provider.cashierpass, provider.login, provider.cashdeskid)
         const player = await cashdesk.searchPlayer(id)
-
+        if (!player) throw RestException.badRequest(__('player.not_found'))
 
         res.status(200).send({player})
     } catch (err) {

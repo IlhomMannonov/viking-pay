@@ -29,7 +29,7 @@ export const user_main_statics = async (req: AuthenticatedRequest, res: Response
             .select('p.name', 'name')
             .addSelect('SUM(t.amount)', 'total_amount')
             .where('t.type = :type', {type: 'provider'})
-            .andWhere('t.program = :program', {program: Boolean(program)})
+            .andWhere('t.program = :program', {program: program})
             .andWhere('t."user" = :userId', {userId: user_id})
             .andWhere('t.created_at >= :fromDate', {fromDate})
             .andWhere('p.deleted = false')
