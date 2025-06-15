@@ -27,8 +27,7 @@ bot.start(async (ctx) => {
 
 bot.on('contact', async (ctx) => {
     const user = await getBotUser(ctx.chat.id.toString());
-    // if (user.state == 'send_phone') {
-    user.state = "send_FIO";
+    user.state = "user_home";
 
     const contact = ctx.message.contact;
     let number = contact.phone_number;
@@ -37,8 +36,8 @@ bot.on('contact', async (ctx) => {
     }
     user.phone_number = number;
     await userRepository.save(user);
-    await ctx.reply("Отправьте свое полное имя и фамилию", Markup.removeKeyboard());
-    // }
+    await ctx.reply("🏴‍☠️ Добро пожаловать в бот Viking Pay!", Markup.removeKeyboard());
+    await userHome(ctx);
 });
 
 
@@ -71,7 +70,6 @@ export const userHome = async (ctx: Context) => {
     // const payme = await paymeRepository.findOne({where: {user_id: user.id}})
     await ctx.reply(
         "👋 Приветствуем вас!\n" +
-        "🏴‍☠️ Добро пожаловать в бот Viking Pay!\n" +
         "\n" +
         "💼 Наши услуги:\n" +
         "🔁 Пополнение счетов букмекерских сайтов\n" +
