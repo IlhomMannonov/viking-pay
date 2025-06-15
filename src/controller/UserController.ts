@@ -11,6 +11,7 @@ import {Attachment} from "../entity/Attachment";
 import {RabbitMQService} from "../service/MQServise";
 import {TelegramMessage} from "../entity/TelegramMessage";
 import {get_user_modules} from "./RolePermissionController";
+import {exceptions} from "winston";
 
 const userRepository = AppDataSource.getRepository(User);
 const cardRepository = AppDataSource.getRepository(Card);
@@ -25,7 +26,7 @@ export const me = async (req: AuthenticatedRequest, res: Response, next: NextFun
         if (!req.user) throw RestException.badRequest(__('user.no_user_in_header'))
         req.user.password = null
 
-        if (req.user.role_id){
+        if (req.user.role_id) {
             req.user.modules = await get_user_modules(req.user.role_id);
         }
         res.status(200).send({
@@ -41,6 +42,7 @@ export const me = async (req: AuthenticatedRequest, res: Response, next: NextFun
                 amount: req.user.amount,
                 modules: req.user.modules,
                 birthday: req.user.birthday,
+                logo_id: req.user.logo_id,
             }
         });
 
@@ -56,7 +58,7 @@ export const get_user = async (req: AuthenticatedRequest, res: Response, next: N
         if (!req.user) throw RestException.badRequest(__('user.no_user_in_header'));
 
         const user_id = req.params.user_id
-        const user:any = await userRepository.findOne({
+        const user: any = await userRepository.findOne({
             where: {id: Number(user_id), deleted: false},
             select: ['id', 'first_name', 'first_name', 'last_login_time', 'phone_number', 'phone_verified', 'chat_id', 'is_bot_user', 'logo_id', 'birthday'],
         });
@@ -284,6 +286,18 @@ export const update_user_status = async (req: AuthenticatedRequest, res: Respons
             success: true,
             message: __mf('user.updated_status', {status: status})
         });
+
+    } catch (err) {
+        next(err)
+    }
+}
+export const send_ask_phone = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+    try {
+        const user = req.user;
+        if (!user) throw RestException.notFound(__('user.not_found'));
+
+        if (!user.is_bot_user) throw RestException.notFound('Only bot users can use');
+
 
     } catch (err) {
         next(err)
