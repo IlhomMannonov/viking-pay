@@ -127,6 +127,7 @@ export const login_tg = async (req: Request, res: Response, next: NextFunction):
             user.logo_id = photo_url;
         }
 
+       await userRepository.save(user)
         if (!JWT_SECRET) {
             res.status(500).json({message: "Serverda muammo bor. Iltimos, keyinroq urinib ko‘ring.", success: false});
             return;
