@@ -8,11 +8,9 @@ services:
       - "18080:8080"
     environment:
       - NODE_ENV=production
-      - DB_HOST=postgres-database
+      - DB_HOST=postgres-database  # ← mavjud konteyner nomi
       - DB_PORT=5432
       - DB_USER=postgres
       - DB_PASS=root123
       - DB_NAME=viking_pay
-    depends_on:
-      - db
     restart: always
