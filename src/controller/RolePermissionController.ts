@@ -237,11 +237,13 @@ export const get_user_modules = async(role_id:number) => {
                     name: sm.name,
                     check: role.modules.includes(sm.id),
                     order_index: sm.order_index,
+                    route: sm.route,
                 }));
 
             return {
                 id: module.id,
                 name: module.name,
+                route: module.route,
                 check: role.modules.includes(module.id),
                 order_index: module.order_index,
                 submodules,
