@@ -25,7 +25,6 @@ export const me = async (req: AuthenticatedRequest, res: Response, next: NextFun
         if (!req.user) throw RestException.badRequest(__('user.no_user_in_header'))
         req.user.password = null
 
-        console.log(req.user.role_id);
         if (req.user.role_id){
             req.user.modules = await get_user_modules(req.user.role_id);
         }

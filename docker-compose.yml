@@ -16,6 +16,8 @@ services:
     networks:
       - shared-net
     restart: always
+    volumes:
+      - /root/viking_files:/app/uploads
 
 networks:
   shared-net:
