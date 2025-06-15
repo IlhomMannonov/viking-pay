@@ -8,7 +8,7 @@ services:
       - "18080:8080"
     environment:
       - NODE_ENV=production
-      - DB_HOST=host.docker.internal         # ✅ bu yer to‘g‘ridan-to‘g‘ri Postgres servisini bildiradi
+      - DB_HOST=postgres-database
       - DB_PORT=5432
       - DB_USER=postgres
       - DB_PASS=root123
