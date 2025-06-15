@@ -106,7 +106,7 @@ export const getFileById = async (req: Request, res: Response, next: NextFunctio
         }
 
         const filename = attachment.file_name; // URL'dan fayl nomini olish
-        const filePath = path.join('/root/viking_files', filename);
+        const filePath = path.join('/app/uploads', filename);
         // Fayl mavjudligini tekshirish
         if (!fs.existsSync(filePath)) {
             res.status(404).json({message: 'Fayl topilmadi!'});
