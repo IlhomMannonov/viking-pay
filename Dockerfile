@@ -1,20 +1,22 @@
-# Rasmiy Node.js image asosida
 FROM node:18
 
-# App fayllari uchun ishchi papka
 WORKDIR /app
 
-# package.json va package-lock.json ni nusxalash
+# package.json va tsconfig.json fayllarni yuklaymiz
 COPY package*.json ./
+COPY tsconfig.json ./
 
-# npm install
+# Kutubxonalarni o‘rnatamiz
 RUN npm install
 
-# Barcha boshqa fayllarni yuklash
+# Qolgan fayllarni yuklaymiz
 COPY . .
 
-# Serverni qaysi portda eshitishini e'lon qilish
+# 🔧 TypeScriptni compile qilamiz
+RUN npm run build
+
+# Port ochamiz
 EXPOSE 8080
 
-# Loyihani ishga tushirish
+# Ishga tushirish
 CMD ["npm", "start"]
