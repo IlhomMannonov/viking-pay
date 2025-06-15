@@ -5,6 +5,7 @@ import fs from 'fs';
 import {AppDataSource} from "../config/db";
 import {Attachment} from "../entity/Attachment";
 import {RestException} from "../middilwares/RestException";
+import axios from "axios";
 
 const attachmentRepository = AppDataSource.getRepository(Attachment);
 
@@ -43,7 +44,7 @@ export const uploadFile = async (req: Request, res: Response, next: NextFunction
                     original_name: file.originalname,
                     file_name: file.filename,
                     file_size: file.size,
-                    href: `/talaba_portal_files/${file.filename}`,
+                    href: `/viking_files/${file.filename}`,
                     file_type: getFileExtension(file.filename),
                 });
                 const savedAttachment = await attachmentRepository.save(attachment);
@@ -146,4 +147,45 @@ const upload = multer({
 // `files` - bu form field nomi, `10` - yuklanadigan fayllar soni limiti
 function getFileExtension(filename: string): string {
     return path.extname(filename);
+}
+
+
+export async function download_file_create_attachment(link: string) {
+    try {
+        const response = await axios({
+            method: 'GET',
+            url: link,
+            responseType: 'stream',
+        });
+
+        const ext = path.extname(link).split('?')[0] || '.svg';
+        const filename = `img_${Date.now()}${ext}`;
+        const savePath = path.join('/root/viking_files', filename);
+
+        const writer = fs.createWriteStream(savePath);
+        response.data.pipe(writer);
+
+        await new Promise((resolve, reject) => {
+            writer.on('finish', resolve);
+            writer.on('error', reject);
+        });
+
+        const stats = fs.statSync(savePath);
+        const fileSizeInBytes = stats.size;
+
+        const attachment = attachmentRepository.create({
+            original_name: path.basename(link), // asl nomi
+            file_name: filename,
+            file_size: fileSizeInBytes,
+            href: `/viking_files/${filename}`,
+            file_type: getFileExtension(filename),
+        });
+
+        return await attachmentRepository.save(attachment);
+
+
+    } catch (err) {
+        console.error('Faylni olishda xato:', err);
+        throw err;
+    }
 }

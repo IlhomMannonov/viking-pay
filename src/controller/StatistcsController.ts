@@ -58,11 +58,13 @@ export const all_my_deposit_withdraws = async (req: AuthenticatedRequest, res: R
     WHERE t.deleted = false
       AND t.program = true
       AND t.type = 'wallet'
+      AND t.status = 'success_pay'
       AND t."user" = :userId) AS deposit`,
             `(SELECT SUM(t.amount)
     FROM transaction t
     WHERE t.deleted = false
       AND t.program = false
+      AND t.status = 'success_pay'
       AND t.type = 'wallet'
       AND t."user" = :userId) AS withdraw`
         ])

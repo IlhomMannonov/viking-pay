@@ -9,8 +9,8 @@ router.route("/register")
 router.route("/login")
     .post(login);
 
-router.route("/login-tg/:chat_id")
-    .get(login_tg);
+router.route("/login-tg")
+    .post(login_tg);
 
 
 export default router;

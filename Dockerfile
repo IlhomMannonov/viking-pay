@@ -1,21 +1,20 @@
-# 1. Node image
+# Rasmiy Node.js image asosida
 FROM node:18
 
-# 2. Ishchi papkani tanlash
+# App fayllari uchun ishchi papka
 WORKDIR /app
 
-# 3. Paket fayllarni nusxalash va o'rnatish
+# package.json va package-lock.json ni nusxalash
 COPY package*.json ./
+
+# npm install
 RUN npm install
 
-# 4. Butun loyihani nusxalash
+# Barcha boshqa fayllarni yuklash
 COPY . .
 
-# 5. Loyiha build qilish
-RUN npm run build
+# Serverni qaysi portda eshitishini e'lon qilish
+EXPOSE 8080
 
-# 6. Port ochish (agar 3000 bo‘lsa)
-EXPOSE 3000
-
-# 7. Loyihani ishga tushirish
-CMD ["node", "dist/index.js"]
+# Loyihani ishga tushirish
+CMD ["npm", "start"]

@@ -1,5 +1,9 @@
 node_modules
-dist
+npm-debug.log
 .git
-Dockerfile
-docker-compose.yml
+.env
+logs
+dist.tar.gz
+init.bat
+init.sh
+.idea

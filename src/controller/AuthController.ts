@@ -5,7 +5,7 @@ import bcrypt from "bcrypt";
 import {NextFunction, Request, Response} from "express";
 import jwt from "jsonwebtoken";
 import axios from "axios";
-import {RestException} from "../middilwares/RestException";
+import {download_file_create_attachment} from "./AttachmentController";
 
 const userRepository = AppDataSource.getRepository(User);
 const JWT_SECRET = process.env.JWT_KEY || "dshakjfhdfs678g56d678gt98df";
@@ -106,18 +106,32 @@ export const login = async (req: Request, res: Response, next: NextFunction): Pr
 };
 export const login_tg = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-    const chat_id = req.params.chat_id;
-        const user = await userRepository.findOne({where: {chat_id: chat_id}});
+        const {id, first_name, last_name, username, photo_url} = req.body;
+        validFields(['id', 'first_name', 'username', 'photo_url'], req.body);
 
+        let user = await userRepository.findOne({where: {chat_id: id}});
         if (!user) {
-            res.status(401).json({message: "Foydalanuvchi yoki parol noto‘g‘ri!", success: false});
-            return;
+            user = await userRepository.save({
+                chat_id: id,
+                first_name: first_name,
+                last_name: last_name,
+            })
+        }
+        if (user.first_name !== first_name)
+            user.first_name = first_name;
+
+        if (user.last_name !== last_name)
+            user.last_name = last_name;
+
+        if (photo_url) {
+            user.logo_id = photo_url;
         }
 
         if (!JWT_SECRET) {
             res.status(500).json({message: "Serverda muammo bor. Iltimos, keyinroq urinib ko‘ring.", success: false});
             return;
         }
+
 
         const token = jwt.sign(
             {
