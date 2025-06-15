@@ -15,13 +15,13 @@ export const seedInitialData = async (dataSource: DataSource) => {
 
     // Avval parent modullarni yozamiz
     const modules = [
-        {name: "Hisobotlar", order_index: 1},
+        {name: "Hisobotlar", order_index: 1, route: "reports"},
         {name: "Payment System", order_index: 2},
-        {name: "Tizim kartalari", order_index: 3},
-        {name: "Provider", order_index: 4},
-        {name: "Telegram integration", order_index: 5},
-        {name: "Users", order_index: 6},
-        {name: "Settings", order_index: 7},
+        {name: "Tizim kartalari", order_index: 3, route: "system-cards"},
+        {name: "Provider", order_index: 4, route: "provider"},
+        {name: "Telegram integration", order_index: 5, route: "telegram-integration"},
+        {name: "Users", order_index: 6, route: "users"},
+        {name: "Settings", order_index: 7, route: "settings"},
     ]
 
     const savedParents: Module[] = []
@@ -35,10 +35,10 @@ export const seedInitialData = async (dataSource: DataSource) => {
     const paymentParent = savedParents.find(m => m.name === 'Payment System')
     if (paymentParent) {
         const sub_modules = [
-            {name: "Chiqarish Kutilmoqda", order_index: 1},
-            {name: "Wallet Transaction", order_index: 2},
-            {name: "Provider Transction", order_index: 3},
-            {name: "Payment Settings", order_index: 4},
+            {name: "Chiqarish Kutilmoqda", order_index: 1, route: "withdraw-pending"},
+            {name: "Wallet Transaction", order_index: 2, route: "wallet-transaction"},
+            {name: "Provider Transction", order_index: 3, route: "provider-transaction"},
+            {name: "Payment Settings", order_index: 4, route: "payment-settings"},
         ]
 
         for (const sub of sub_modules) {

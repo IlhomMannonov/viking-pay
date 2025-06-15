@@ -10,6 +10,9 @@ export class Module extends BaseEntityFull {
     @Column({type: 'varchar', nullable: true})
     name!: string;
 
+    @Column({type: 'varchar', nullable: true})
+    route!: string;
+
 
     //OTA MODUL
     @ManyToOne(() => Module, module => module.id)
