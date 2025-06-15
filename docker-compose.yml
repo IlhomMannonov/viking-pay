@@ -8,7 +8,7 @@ services:
       - "18080:8080"
     environment:
       - NODE_ENV=production
-      - DB_HOST=db         # ✅ bu yer to‘g‘ridan-to‘g‘ri Postgres servisini bildiradi
+      - DB_HOST=host.docker.internal         # ✅ bu yer to‘g‘ridan-to‘g‘ri Postgres servisini bildiradi
       - DB_PORT=5432
       - DB_USER=postgres
       - DB_PASS=root123
@@ -16,18 +16,3 @@ services:
     depends_on:
       - db
     restart: always
-
-  db:
-    image: postgres:15
-    container_name: viking-postgres
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: root123
-      POSTGRES_DB: viking_pay
-    ports:
-      - "25432:5432"
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-
-volumes:
-  pgdata:
