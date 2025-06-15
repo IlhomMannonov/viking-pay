@@ -218,9 +218,11 @@ export const get_user_modules = async(role_id:number) => {
             'm.name',
             'm.module_id',
             'm.order_index',
+            'm.route',
             'p.id',
             'p.name',
             'p.desc',
+            'p.module_id',
             'p.module_id',
         ])
         .orderBy('m.order_index', 'ASC')
