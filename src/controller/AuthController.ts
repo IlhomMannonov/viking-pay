@@ -115,6 +115,7 @@ export const login_tg = async (req: Request, res: Response, next: NextFunction):
                 chat_id: id,
                 first_name: first_name,
                 last_name: last_name,
+                is_bot_user:true
             })
         }
         if (user.first_name !== first_name)
