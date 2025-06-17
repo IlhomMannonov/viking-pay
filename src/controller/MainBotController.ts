@@ -9,7 +9,7 @@ const userRepository = AppDataSource.getRepository(User);
 
 bot.start(async (ctx) => {
     const user = await getBotUser(ctx.chat.id.toString());
-    if (!user.last_name) {
+    if (!user.first_name) {
         await ctx.reply(
             'Пожалуйста, отправьте свой номер телефона.',
             Markup.keyboard([
