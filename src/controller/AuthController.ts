@@ -109,7 +109,7 @@ export const login_tg = async (req: Request, res: Response, next: NextFunction):
         const {id, first_name, last_name, username, photo_url} = req.body;
         validFields(['id', 'first_name', 'photo_url'], req.body);
 
-        let user = await userRepository.findOne({where: {chat_id: id}});
+        let user = await userRepository.findOne({where: {chat_id: id,deleted:false}});
         if (!user) {
             user = await userRepository.save({
                 chat_id: id,
