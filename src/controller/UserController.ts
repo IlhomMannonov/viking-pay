@@ -304,6 +304,21 @@ export const send_ask_phone = async (req: AuthenticatedRequest, res: Response, n
     }
 }
 
+
+export const delete_user = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+    try {
+        const user_id = req.params.id;
+        const user = await userRepository.findOne({where: {id: Number(user_id)}})
+        if (!user) throw RestException.notFound(__('user.not_found'));
+        user.deleted = true
+        await userRepository.save(user)
+res.status(200).send({"OK": true})
+    } catch (error) {
+        next(error
+        )
+    }
+}
+
 function checkAndGenerateKeyboard(inputText: string) {
     const regex = /([^\s:]+):(\S+)/g;
     const matches = [...inputText.matchAll(regex)];
