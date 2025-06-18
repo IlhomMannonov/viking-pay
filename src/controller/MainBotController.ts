@@ -4,12 +4,12 @@ import {AppDataSource} from "../config/db";
 import {User} from "../entity/User";
 import {Context} from "node:vm";
 
-const bot = new Telegraf('7463416724:AAFnvtj19qjumIRwuZ5Q_9IeZnnzRLX8NCU');
+const bot = new Telegraf('7958191913:AAFzyiOb4Xo9J9D1S2_X76WgECtbrfRWJjI');
 const userRepository = AppDataSource.getRepository(User);
 
 bot.start(async (ctx) => {
     const user = await getBotUser(ctx.chat.id.toString());
-    if (!user.last_name) {
+    if (!user.first_name) {
         await ctx.reply(
             'Пожалуйста, отправьте свой номер телефона.',
             Markup.keyboard([
@@ -86,7 +86,7 @@ export const userHome = async (ctx: Context) => {
         "\n" +
         "🚀 Чтобы начать, выберите нужную услугу из меню ниже или нажмите кнопку “🆘 Начать”.",
         Markup.inlineKeyboard([
-            [Markup.button.url("🆘 Начать", "https://t.me/viking_pay_beta_bot?startapp=start")]
+            [Markup.button.url("🆘 Начать", "https://t.me/VikingPaybot?startapp=start")]
         ])
 
     );

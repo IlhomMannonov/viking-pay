@@ -70,6 +70,9 @@ async function transactionWorker() {
                     transaction.soft_amount = realDeposited;
                     logger.info("⚠️ Pul qisman tushdi.");
                 }
+
+                card.limit -= realDeposited;
+                await cardRepository.save(transaction);
             } else {
                 transaction.status = 'reject';
                 logger.info("❌ Pul tushmagan.");
@@ -100,15 +103,15 @@ async function sendMessageWorker() {
                 await telegramMessageRepository
                     .createQueryBuilder()
                     .update()
-                    .set({ send_count: () => 'send_count + 1' })
-                    .where("id = :id", { id: data.t_message_id })
+                    .set({send_count: () => 'send_count + 1'})
+                    .where("id = :id", {id: data.t_message_id})
                     .execute();
             } else {
                 await telegramMessageRepository
                     .createQueryBuilder()
                     .update()
-                    .set({ un_send_count: () => 'un_send_count + 1' })
-                    .where("id = :id", { id: data.t_message_id })
+                    .set({un_send_count: () => 'un_send_count + 1'})
+                    .where("id = :id", {id: data.t_message_id})
                     .execute();
             }
 
@@ -137,7 +140,7 @@ function delay(ms: number) {
 let messageCounter = 0;
 
 async function sendTelegramMessage(data: any): Promise<any> {
-    const { chat_id, type, caption, file_id, inline_buttons } = data;
+    const {chat_id, type, caption, file_id, inline_buttons} = data;
 
     const url = `https://api.telegram.org/bot${token}/${
         type === 'photo' ? 'sendPhoto' :
@@ -178,7 +181,6 @@ async function sendTelegramMessage(data: any): Promise<any> {
         }
     }
 }
-
 
 
 // Serverni ishga tushirish va PostgreSQL bazasiga ulanish

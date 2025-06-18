@@ -107,14 +107,15 @@ export const login = async (req: Request, res: Response, next: NextFunction): Pr
 export const login_tg = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const {id, first_name, last_name, username, photo_url} = req.body;
-        validFields(['id', 'first_name', 'username', 'photo_url'], req.body);
+        validFields(['id', 'first_name', 'photo_url'], req.body);
 
-        let user = await userRepository.findOne({where: {chat_id: id}});
+        let user = await userRepository.findOne({where: {chat_id: id,deleted:false}});
         if (!user) {
             user = await userRepository.save({
                 chat_id: id,
                 first_name: first_name,
                 last_name: last_name,
+                is_bot_user:true
             })
         }
         if (user.first_name !== first_name)

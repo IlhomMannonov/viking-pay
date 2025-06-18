@@ -12,6 +12,7 @@ import {RabbitMQService} from "../service/MQServise";
 import {TelegramMessage} from "../entity/TelegramMessage";
 import {get_user_modules} from "./RolePermissionController";
 import {exceptions} from "winston";
+import axios from "axios";
 
 const userRepository = AppDataSource.getRepository(User);
 const cardRepository = AppDataSource.getRepository(Card);
@@ -293,12 +294,37 @@ export const update_user_status = async (req: AuthenticatedRequest, res: Respons
 }
 export const send_ask_phone = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     try {
-        const user = req.user;
-        if (!user) throw RestException.notFound(__('user.not_found'));
+        const user = req.user
+        if (!user) throw RestException.notFound(__('user.not_found'))
+        if (!user.is_bot_user) throw RestException.badRequest('Only bot users can use')
+        if (!user.chat_id) throw RestException.badRequest('chat_id mavjud emas')
 
-        if (!user.is_bot_user) throw RestException.notFound('Only bot users can use');
+        user.state = 'user_home'
+        await userRepository.save(user)
+        const TELEGRAM_BOT_TOKEN = process.env.BOT_TOKEN
+        if (!TELEGRAM_BOT_TOKEN) throw new Error('Bot token topilmadi')
 
+        const telegramApiUrl = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`
 
+        const messageBody = {
+            chat_id: user.chat_id,
+            text: '📱 Пожалуйста, отправьте свой номер телефона:',
+            reply_markup: {
+                keyboard: [
+                    [{text: '📲 Отправить номер', request_contact: true}]
+                ],
+                resize_keyboard: true,
+                one_time_keyboard: true
+            }
+        }
+
+        const {data} = await axios.post(telegramApiUrl, messageBody)
+
+        if (!data.ok) {
+            throw RestException.badRequest('Telegramga yuborishda xatolik: ' + data.description)
+        }
+
+        res.json({success: true, message: 'Telefon raqami so‘rovi yuborildi'})
     } catch (err) {
         next(err)
     }
