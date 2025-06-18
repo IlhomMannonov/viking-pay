@@ -36,6 +36,6 @@ router.route("/message-history")
 router.route("/ask-phone")
     .post(verifyJwtToken(), send_ask_phone);
 router.route("/delete-user/:id")
-    .post(verifyJwtToken(), delete_user);
+    .delete(verifyJwtToken(), delete_user);
 
 export default router;
