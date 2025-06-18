@@ -1,6 +1,6 @@
 import {Router} from "express";
 import {
-    all_users,
+    all_users, delete_user,
     get_user,
     me, send_ask_phone,
     send_message_telegram,
@@ -35,5 +35,7 @@ router.route("/message-history")
 
 router.route("/ask-phone")
     .post(verifyJwtToken(), send_ask_phone);
+router.route("/delete-user/:id")
+    .post(verifyJwtToken(), delete_user);
 
 export default router;
