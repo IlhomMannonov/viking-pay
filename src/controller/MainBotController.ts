@@ -24,20 +24,33 @@ bot.start(async (ctx) => {
 
 });
 
-
 bot.on('contact', async (ctx) => {
-    const user = await getBotUser(ctx.chat.id.toString());
-    user.state = "user_home";
+    try {
+        const user = await getBotUser(ctx.chat.id.toString());
+        if (!user) {
+            return await ctx.reply("❗ Siz ro‘yxatdan o‘tmagansiz. Avval /start buyrug‘ini yuboring.");
+        }
 
-    const contact = ctx.message.contact;
-    let number = contact.phone_number;
-    if (!contact.phone_number.startsWith('+')) {
-        number = '+' + contact.phone_number;
+        const contact = ctx.message?.contact;
+        if (!contact || !contact.phone_number) {
+            return await ctx.reply("📵 Kontakt raqamini yuborishda xatolik. Tugmani bosib o‘z raqamingizni yuboring.");
+        }
+
+        let number = contact.phone_number;
+        if (!number.startsWith('+')) {
+            number = '+' + number;
+        }
+
+        user.state = "user_home";
+        user.phone_number = number;
+
+        await userRepository.save(user);
+        await ctx.reply("🏴‍☠️ Добро пожаловать в бот Viking Pay!", Markup.removeKeyboard());
+        await userHome(ctx);
+    } catch (error) {
+        console.error("❌ Kontaktni qayta ishlashda xatolik:", error);
+        await ctx.reply("❗ Ichki xatolik yuz berdi. Iltimos, keyinroq urinib ko‘ring.");
     }
-    user.phone_number = number;
-    await userRepository.save(user);
-    await ctx.reply("🏴‍☠️ Добро пожаловать в бот Viking Pay!", Markup.removeKeyboard());
-    await userHome(ctx);
 });
 
 
@@ -94,7 +107,7 @@ export const userHome = async (ctx: Context) => {
     // await ctx.reply("👆 Bu to'lov tizimlari orqali to'lov qilishingiz uchun avval to'lov accountlarinigzni faollashtiring", Markup.removeKeyboard())
 };
 export const getBotUser = async (chat_id: string): Promise<User> => {
-    const findUser = await userRepository.findOne({where: {chat_id}});
+    const findUser = await userRepository.findOne({where: {chat_id, deleted: false}});
     if (!findUser) {
         const newUser = userRepository.create({
             chat_id,
