@@ -8,69 +8,73 @@ import {StaticOptions} from "../entity/StaticOptions";
 export const seedInitialData = async (dataSource: DataSource) => {
     const moduleRepository = dataSource.getRepository(Module)
 
-    const existing = await moduleRepository.findOne({where: {name: 'Users'}})
-    if (existing) {
-        console.log('Modules already seeded')
-        return
-    }
-
-    // Avval parent modullarni yozamiz
     const modules = [
-        {name: "Hisobotlar", order_index: 1, route: "reports"},
-        {name: "Payment System", order_index: 2},
-        {name: "Tizim kartalari", order_index: 3, route: "system-cards"},
-        {name: "Provider", order_index: 4, route: "provider"},
-        {name: "Telegram integration", order_index: 5, route: "telegram-integration"},
-        {name: "Users", order_index: 6, route: "users"},
-        {name: "Settings", order_index: 7, route: "settings"},
+        { name: "Hisobotlar", order_index: 1, route: "reports" },
+        { name: "Payment System", order_index: 2 },
+        { name: "Tizim kartalari", order_index: 3, route: "system-cards" },
+        { name: "Provider", order_index: 4, route: "provider" },
+        { name: "Telegram integration", order_index: 5, route: "telegram-integration" },
+        { name: "Users", order_index: 6, route: "users" },
+        { name: "Settings", order_index: 7, route: "settings" },
     ]
 
     const savedParents: Module[] = []
 
     for (const mod of modules) {
-        const saved = await moduleRepository.save(moduleRepository.create(mod))
-        savedParents.push(saved)
+        let existing = await moduleRepository.findOne({ where: { name: mod.name } })
+        if (existing) {
+            moduleRepository.merge(existing, mod)
+            savedParents.push(await moduleRepository.save(existing))
+        } else {
+            const saved = await moduleRepository.save(moduleRepository.create(mod))
+            savedParents.push(saved)
+        }
     }
 
-    // Endi `Payment System` sub-modullari (parent = order_index 2 bo‘lgan modul)
     const paymentParent = savedParents.find(m => m.name === 'Payment System')
     if (paymentParent) {
         const sub_modules = [
-            {name: "Chiqarish Kutilmoqda", order_index: 1, route: "withdraw-pending"},
-            {name: "Wallet Transaction", order_index: 2, route: "wallet-transaction"},
-            {name: "Provider Transction", order_index: 3, route: "provider-transaction"},
-            {name: "Payment Settings", order_index: 4, route: "payment-settings"},
+            { name: "Chiqarish Kutilmoqda", order_index: 1, route: "withdraw-pending" },
+            { name: "Wallet Transaction", order_index: 2, route: "wallet-transaction" },
+            { name: "Provider Transction", order_index: 3, route: "provider-transaction" },
+            { name: "Payment Settings", order_index: 4, route: "payment-settings" },
         ]
 
         for (const sub of sub_modules) {
-            await moduleRepository.save(moduleRepository.create({
-                ...sub,
-                module: paymentParent,
-                module_id: paymentParent.id
-            }))
+            let existing = await moduleRepository.findOne({ where: { name: sub.name } })
+            const data = { ...sub, module: paymentParent, module_id: paymentParent.id }
+            if (existing) {
+                moduleRepository.merge(existing, data)
+                await moduleRepository.save(existing)
+            } else {
+                await moduleRepository.save(moduleRepository.create(data))
+            }
         }
     }
 
-    const settingsParent = await moduleRepository.findOne({where:{name:'Settings'}})
-
+    const settingsParent = savedParents.find(m => m.name === 'Settings')
     if (settingsParent) {
         const sub_modules = [
-            {name: "Static Options", order_index: 1, route: "static-options"},
-            {name: "Empty-1", order_index: 1, route: "-1"},
-            {name: "Empty-2", order_index: 1, route: "-2"},
+            { name: "Static Options", order_index: 1, route: "static-options" },
+            { name: "Empty-1", order_index: 2, route: "-1" },
+            { name: "Empty-2", order_index: 3, route: "-2" },
         ]
 
         for (const sub of sub_modules) {
-            await moduleRepository.save(moduleRepository.create({
-                ...sub,
-                module: settingsParent,
-                module_id: settingsParent.id
-            }))
+            let existing = await moduleRepository.findOne({ where: { name: sub.name } })
+            const data = { ...sub, module: settingsParent, module_id: settingsParent.id }
+            if (existing) {
+                moduleRepository.merge(existing, data)
+                await moduleRepository.save(existing)
+            } else {
+                await moduleRepository.save(moduleRepository.create(data))
+            }
         }
     }
 
-    console.log('Modules seeded successfully')
+    console.log('Modules seeded/updated successfully')
 }
+
 
 export const seedPermissions = async (dataSource: DataSource) => {
     const permissionRepository = dataSource.getRepository(Permission)
