@@ -51,7 +51,7 @@ export const seedInitialData = async (dataSource: DataSource) => {
         }
     }
 
-    const settingsParent = savedParents.find(m => m.name === 'Settings')
+    const settingsParent = await moduleRepository.findOne({where:{name:'Settings'}})
 
     if (settingsParent) {
         const sub_modules = [
