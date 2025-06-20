@@ -54,23 +54,24 @@ export const all_my_deposit_withdraws = async (req: AuthenticatedRequest, res: R
         .createQueryBuilder()
         .select([
             `(SELECT SUM(t.amount)
-    FROM transaction t
-    WHERE t.deleted = false
-      AND t.program = true
-      AND t.type = 'wallet'
-      AND t.status = 'success_pay'
-      AND t."user" = :userId) AS deposit`,
+          FROM transaction t
+          WHERE t.deleted = false
+            AND t.program = true
+            AND t.type = 'wallet'
+            AND t.status IN ('success_pay', 'partial_success')
+            AND t."user" = :userId) AS deposit`,
             `(SELECT SUM(t.amount)
-    FROM transaction t
-    WHERE t.deleted = false
-      AND t.program = false
-      AND t.status = 'success_pay'
-      AND t.type = 'wallet'
-      AND t."user" = :userId) AS withdraw`
+          FROM transaction t
+          WHERE t.deleted = false
+            AND t.program = false
+            AND t.type = 'wallet'
+            AND t.status IN ('success_pay', 'partial_success')
+            AND t."user" = :userId) AS withdraw`
         ])
-        .from(Transaction, 'tx') // bu shunchaki asosiy alias uchun
+        .from(Transaction, 'tx')
         .setParameters({ userId: user_id })
         .getRawOne()
+
     res.status(200).json({data: result});
 
 }

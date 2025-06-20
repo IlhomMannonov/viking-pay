@@ -10,8 +10,9 @@ import {TelegramMessage} from "../entity/TelegramMessage";
 import {Role} from "../entity/Role";
 import {Permission} from "../entity/Permission";
 import {Module} from "../entity/Module";
-import {seedInitialData, seedPermissions} from "../seed/InitialData";
+import {seedInitialData, seedPermissions,seedStaticOptions} from "../seed/InitialData";
 import {Slider} from "../entity/Slider";
+import {StaticOptions} from "../entity/StaticOptions";
 
 export const AppDataSource = new DataSource({
     type: 'postgres',
@@ -31,7 +32,8 @@ export const AppDataSource = new DataSource({
         Role,
         Permission,
         Module,
-        Slider
+        Slider,
+        StaticOptions
     ],
     synchronize: true,
 });
@@ -44,6 +46,8 @@ export const connectDB = async (): Promise<void> => {
                 await seedInitialData(datasource);
                 // PERMISSIONLAR
                 await seedPermissions(datasource)
+                //STATIK OPTIONLAR
+                await seedStaticOptions(datasource)
             })
         console.log('PostgreSQL database connected');
     } catch (error) {

@@ -2,6 +2,7 @@ import {AppDataSource} from "../config/db";
 import {Module} from "../entity/Module";
 import {DataSource} from "typeorm";
 import {Permission} from "../entity/Permission";
+import {StaticOptions} from "../entity/StaticOptions";
 
 
 export const seedInitialData = async (dataSource: DataSource) => {
@@ -101,4 +102,25 @@ export const seedPermissions = async (dataSource: DataSource) => {
     }
 
     console.log('Permissions seeded successfully');
+}
+
+export const seedStaticOptions = async (dataSource: DataSource) => {
+    const staticOptionsRepository = dataSource.getRepository(StaticOptions)
+
+    const staticOptions:StaticOptions[] = [
+        { key: "min_deposit", value: '5000' ,desc:"Hamyonga minimal pul toldirish"},
+        { key: "max_deposit", value: '99000000' ,desc:"Hamyonga maximal pul toldirish"},
+        { key: "min_withdraw", value: '100000' ,desc:"Minimal pul chiqarish"},
+        { key: "max_withdraw", value: '99000000' ,desc:"Maksimal pul chiqarish"},
+    ]
+
+    for (const option of staticOptions) {
+        const exists = await staticOptionsRepository.findOneBy({ key: option.key })
+        if (!exists) {
+            await staticOptionsRepository.save(option)
+        }
+    }
+
+    console.log('StaticOptions seeded successfully');
+
 }
