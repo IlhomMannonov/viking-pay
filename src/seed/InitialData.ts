@@ -51,6 +51,24 @@ export const seedInitialData = async (dataSource: DataSource) => {
         }
     }
 
+    const settingsParent = savedParents.find(m => m.name === 'Settings')
+
+    if (settingsParent) {
+        const sub_modules = [
+            {name: "Static Options", order_index: 1, route: "static-options"},
+            {name: "Empty-1", order_index: 1, route: "-1"},
+            {name: "Empty-2", order_index: 1, route: "-2"},
+        ]
+
+        for (const sub of sub_modules) {
+            await moduleRepository.save(moduleRepository.create({
+                ...sub,
+                module: settingsParent,
+                module_id: settingsParent.id
+            }))
+        }
+    }
+
     console.log('Modules seeded successfully')
 }
 
