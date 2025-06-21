@@ -4,76 +4,105 @@ import {DataSource} from "typeorm";
 import {Permission} from "../entity/Permission";
 import {StaticOptions} from "../entity/StaticOptions";
 
-
 export const seedInitialData = async (dataSource: DataSource) => {
     const moduleRepository = dataSource.getRepository(Module)
 
     const modules = [
-        { name: "Hisobotlar", order_index: 1, route: "reports" },
-        { name: "Payment System", order_index: 2 },
-        { name: "Tizim kartalari", order_index: 3, route: "system-cards" },
-        { name: "Provider", order_index: 4, route: "provider" },
-        { name: "Telegram integration", order_index: 5, route: "telegram-integration" },
-        { name: "Users", order_index: 6, route: "users" },
-        { name: "Settings", order_index: 7, route: "settings" },
+        {
+            name: "Hisobotlar",
+            order_index: 1,
+            route: "reports",
+        },
+        {
+            name: "Payment System",
+            order_index: 2,
+            children: [
+                { name: "Chiqarish Kutilmoqda", order_index: 1, route: "withdraw-pending" },
+                { name: "Wallet Transaction", order_index: 2, route: "wallet-transaction" },
+                { name: "Provider Transction", order_index: 3, route: "provider-transaction" },
+                { name: "Payment Settings", order_index: 4, route: "payment-settings" },
+            ],
+        },
+        {
+            name: "Tizim kartalari",
+            order_index: 3,
+            route: "system-cards",
+        },
+        {
+            name: "Provider",
+            order_index: 4,
+            route: "provider",
+        },
+        {
+            name: "Telegram integration",
+            order_index: 5,
+            children: [
+                {
+                    name: "Accounts",
+                    order_index: 6,
+                    route: "telegram-accounts",
+                },
+                {
+                    name: "Cards management",
+                    order_index: 6,
+                    route: "cards-management",
+                },
+            ]
+        },
+        {
+            name: "Users",
+            order_index: 6,
+            route: "users",
+        },
+        {
+            name: "Hodimlar",
+            order_index: 6,
+            route: "staff",
+            children:[
+                { name: "Users", order_index: 1, route: "staff-users" },
+                { name: "Roles", order_index: 2, route: "roles" },
+                { name: "Permission", order_index: 4, route: "permissions" },
+
+            ]
+        },
+        {
+            name: "Settings",
+            order_index: 7,
+            route: "settings",
+            children: [
+                { name: "Static Options", order_index: 1, route: "static-options" },
+                { name: "Empty-1", order_index: 2, route: "-1" },
+                { name: "Empty-2", order_index: 3, route: "-2" },
+            ],
+        },
     ]
 
-    const savedParents: Module[] = []
-
     for (const mod of modules) {
-        let existing = await moduleRepository.findOne({ where: { name: mod.name } })
-        if (existing) {
-            moduleRepository.merge(existing, mod)
-            savedParents.push(await moduleRepository.save(existing))
+        let parent = await moduleRepository.findOne({ where: { name: mod.name } })
+        if (parent) {
+            moduleRepository.merge(parent, mod)
+            parent = await moduleRepository.save(parent)
         } else {
-            const saved = await moduleRepository.save(moduleRepository.create(mod))
-            savedParents.push(saved)
+            parent = await moduleRepository.save(moduleRepository.create(mod))
         }
-    }
 
-    const paymentParent = savedParents.find(m => m.name === 'Payment System')
-    if (paymentParent) {
-        const sub_modules = [
-            { name: "Chiqarish Kutilmoqda", order_index: 1, route: "withdraw-pending" },
-            { name: "Wallet Transaction", order_index: 2, route: "wallet-transaction" },
-            { name: "Provider Transction", order_index: 3, route: "provider-transaction" },
-            { name: "Payment Settings", order_index: 4, route: "payment-settings" },
-        ]
-
-        for (const sub of sub_modules) {
-            let existing = await moduleRepository.findOne({ where: { name: sub.name } })
-            const data = { ...sub, module: paymentParent, module_id: paymentParent.id }
-            if (existing) {
-                moduleRepository.merge(existing, data)
-                await moduleRepository.save(existing)
-            } else {
-                await moduleRepository.save(moduleRepository.create(data))
-            }
-        }
-    }
-
-    const settingsParent = savedParents.find(m => m.name === 'Settings')
-    if (settingsParent) {
-        const sub_modules = [
-            { name: "Static Options", order_index: 1, route: "static-options" },
-            { name: "Empty-1", order_index: 2, route: "-1" },
-            { name: "Empty-2", order_index: 3, route: "-2" },
-        ]
-
-        for (const sub of sub_modules) {
-            let existing = await moduleRepository.findOne({ where: { name: sub.name } })
-            const data = { ...sub, module: settingsParent, module_id: settingsParent.id }
-            if (existing) {
-                moduleRepository.merge(existing, data)
-                await moduleRepository.save(existing)
-            } else {
-                await moduleRepository.save(moduleRepository.create(data))
+        if (mod.children && mod.children.length > 0) {
+            for (const child of mod.children) {
+                const data = { ...child, module: parent, module_id: parent.id }
+                let existing = await moduleRepository.findOne({ where: { name: child.name } })
+                if (existing) {
+                    moduleRepository.merge(existing, data)
+                    await moduleRepository.save(existing)
+                } else {
+                    await moduleRepository.save(moduleRepository.create(data))
+                }
             }
         }
     }
 
     console.log('Modules seeded/updated successfully')
 }
+
 
 
 export const seedPermissions = async (dataSource: DataSource) => {
