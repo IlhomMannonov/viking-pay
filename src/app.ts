@@ -31,6 +31,8 @@ app.use(bodyParser.json());
 app.use(cors());
 
 
+
+
 app.use('/telegram', authenticateToken, mainBotRouter);
 app.use('/api/v1/provider', providerRouter);
 app.use('/api/v1/card', cardRouter);
@@ -45,6 +47,7 @@ app.use('/api/v1/role-permission', rolePermissionRouter);
 app.use('/api/v1/slider', sliderRouter);
 app.use('/api/v1/statics', statisticsRouter);
 app.use('/api/v1/static-options', staticOptionsRouter);
+
 
 app.use(errorHandler);
 
