@@ -13,7 +13,8 @@ import {User} from "../entity/User";
 import {RabbitMQService} from "../service/MQServise";
 import {ifError} from "node:assert";
 import * as timers from "node:timers";
-import {groupBy} from 'lodash'; // kerak bo‘lsa o‘rnat: npm i lodash
+import {groupBy} from 'lodash';
+import {StaticOptions} from "../entity/StaticOptions"; // kerak bo‘lsa o‘rnat: npm i lodash
 
 
 
@@ -21,6 +22,7 @@ import {groupBy} from 'lodash'; // kerak bo‘lsa o‘rnat: npm i lodash
 const transactionRepository = AppDataSource.getRepository(Transaction);
 const cardRepository = AppDataSource.getRepository(Card);
 const userRepository = AppDataSource.getRepository(User);
+const staticOptionsRepository = AppDataSource.getRepository(StaticOptions);
 const user = process.env.MQ_USER;
 const pass = process.env.MQ_PASS;
 const ip = process.env.MQ_IP;
@@ -29,6 +31,17 @@ export const create_deposit = async (req: AuthenticatedRequest, res: Response, n
         if (!req.user) throw RestException.badRequest(__('user.no_user_in_header'))
         validFields(['amount'], req.body)
         const {amount} = req.body;
+
+        const max_d = await staticOptionsRepository.findOne({where:{key:"max_deposit"}})
+        const min_d = await staticOptionsRepository.findOne({where:{key:"min_deposit"}})
+
+        const maxDeposit = max_d ? Number(max_d.value) : 0
+        const minDeposit = min_d ? Number(min_d.value) : 0
+
+        if (amount > maxDeposit) throw RestException.notFound(__('transaction.max_withdraw',maxDeposit.toString()));
+        if (amount < minDeposit) throw RestException.notFound(__('transaction.min_withdraw',minDeposit.toString()));
+
+
         logger.info(`${req.user.id} - foydalanuvchi ${amount} miqdorida depozit qilmoqda`)
         let card = await getAvailableCard(amount);
 
@@ -297,6 +310,17 @@ export const withdraw_balance = async (req: AuthenticatedRequest, res: Response,
         if (typeof amount !== 'number' || isNaN(amount) || amount <= 0) {
             throw RestException.badRequest(__('transaction.invalid_amount'));
         }
+
+
+
+       const max_w = await staticOptionsRepository.findOne({where:{key:"max_withdraw"}})
+       const min_w = await staticOptionsRepository.findOne({where:{key:"min_withdraw"}})
+
+        const maxWithdraw = max_w ? Number(max_w.value) : 0
+        const minWithdraw = min_w ? Number(min_w.value) : 0
+
+        if (amount > maxWithdraw) throw RestException.notFound(__('transaction.max_withdraw',maxWithdraw.toString()));
+        if (amount < minWithdraw) throw RestException.notFound(__('transaction.min_withdraw',maxWithdraw.toString()));
 
         // Kartani topish
         const card = await cardRepository.findOne({

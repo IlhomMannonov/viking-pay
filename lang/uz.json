@@ -23,7 +23,11 @@
     "send_checking": "Tekshruvga jo'natildi 10-30 daqiqada javob olasiz",
     "rejected": "Tranzaksiya bekor qilindi",
     "balance_not_enough": "Hisobda pul yetarli emas",
-    "invalid_amount": "Noto'g'ri qiymat miqdori"
+    "invalid_amount": "Noto'g'ri qiymat miqdori",
+    "max_withdraw": "Maksimal pul chiqarish {max_amount} so'm",
+    "min_withdraw": "Minimal pul chiqarish {max_amount} so'm",
+    "max_deposit": "Maksimal pul solish {max_amount} so'm",
+    "min_deposit": "Minimal pul solish {max_amount} so'm"
   },
   "provider": {
     "not_found": "Provider topilmadi",

@@ -7,7 +7,7 @@ const staticOptionsRepository = AppDataSource.getRepository(StaticOptions);
 
 export const getAll = async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> => {
     try {
-        const options = await staticOptionsRepository.find()
+        const options = await staticOptionsRepository.find({order:{key:"DESC"}})
 
         const result = options.reduce((acc, curr) => {
             acc[curr.key] = curr.value
