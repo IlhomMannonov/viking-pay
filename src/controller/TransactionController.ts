@@ -6,7 +6,7 @@ import {validFields} from "../utils/CustomErrors";
 import {Card} from "../entity/Card";
 import {getAvailableCard} from "../service/CardService";
 import {RestException} from "../middilwares/RestException";
-import {__} from "i18n";
+import {__, __mf} from "i18n";
 import logger from '../config/logger';
 import {Not} from "typeorm";
 import {User} from "../entity/User";
@@ -15,8 +15,6 @@ import {ifError} from "node:assert";
 import * as timers from "node:timers";
 import {groupBy} from 'lodash';
 import {StaticOptions} from "../entity/StaticOptions"; // kerak bo‘lsa o‘rnat: npm i lodash
-
-
 
 
 const transactionRepository = AppDataSource.getRepository(Transaction);
@@ -32,14 +30,14 @@ export const create_deposit = async (req: AuthenticatedRequest, res: Response, n
         validFields(['amount'], req.body)
         const {amount} = req.body;
 
-        const max_d = await staticOptionsRepository.findOne({where:{key:"max_deposit"}})
-        const min_d = await staticOptionsRepository.findOne({where:{key:"min_deposit"}})
+        const max_d = await staticOptionsRepository.findOne({where: {key: "max_deposit"}})
+        const min_d = await staticOptionsRepository.findOne({where: {key: "min_deposit"}})
 
         const maxDeposit = max_d ? Number(max_d.value) : 0
         const minDeposit = min_d ? Number(min_d.value) : 0
 
-        if (amount > maxDeposit) throw RestException.notFound(__('transaction.max_withdraw',maxDeposit.toString()));
-        if (amount < minDeposit) throw RestException.notFound(__('transaction.min_withdraw',minDeposit.toString()));
+        if (amount > maxDeposit) throw RestException.notFound(__mf('transaction.max_deposit', {amount: maxDeposit}));
+        if (amount < minDeposit) throw RestException.notFound(__mf('transaction.min_deposit', {amount: minDeposit}));
 
 
         logger.info(`${req.user.id} - foydalanuvchi ${amount} miqdorida depozit qilmoqda`)
@@ -136,15 +134,15 @@ export const my_transactions = async (req: AuthenticatedRequest, res: Response, 
         const queryBuilder = transactionRepository
             .createQueryBuilder('transaction')
             .leftJoinAndSelect('transaction.provider', 'provider')
-            .where('transaction.user_id = :userId', { userId })
+            .where('transaction.user_id = :userId', {userId})
             .andWhere('transaction.deleted = false');
 
         if (fromDate && toDate) {
-            queryBuilder.andWhere('transaction.created_at BETWEEN :fromDate AND :toDate', { fromDate, toDate });
+            queryBuilder.andWhere('transaction.created_at BETWEEN :fromDate AND :toDate', {fromDate, toDate});
         } else if (fromDate) {
-            queryBuilder.andWhere('transaction.created_at >= :fromDate', { fromDate });
+            queryBuilder.andWhere('transaction.created_at >= :fromDate', {fromDate});
         } else if (toDate) {
-            queryBuilder.andWhere('transaction.created_at <= :toDate', { toDate });
+            queryBuilder.andWhere('transaction.created_at <= :toDate', {toDate});
         }
 
         queryBuilder
@@ -197,13 +195,13 @@ export const my_transactions = async (req: AuthenticatedRequest, res: Response, 
             await AppDataSource
                 .createQueryBuilder()
                 .update(Card)
-                .set({ status: 'active' })
+                .set({status: 'active'})
                 .whereInIds(uniqueCardIds)
                 .execute();
         }
 
         // === Guruhlash: Sanaga qarab ===
-        const grouped = groupBy(transactions, (t:Transaction) =>
+        const grouped = groupBy(transactions, (t: Transaction) =>
             new Date(t.created_at).toISOString().split('T')[0]
         );
 
@@ -279,7 +277,7 @@ export const get_my_transaction = async (req: AuthenticatedRequest, res: Respons
                 deleted: false,
                 user_id: req.user.id
             },
-            select: ['id', 'status', 'amount', 'user_id', 'provider_id', 'card_id', 'card_number', 'card_name', 'type', 'created_at','bet_provider'],
+            select: ['id', 'status', 'amount', 'user_id', 'provider_id', 'card_id', 'card_number', 'card_name', 'type', 'created_at', 'bet_provider'],
             relations: ['provider']
         });
         if (!trans) throw RestException.notFound(__('transaction.not_found'));
@@ -312,15 +310,14 @@ export const withdraw_balance = async (req: AuthenticatedRequest, res: Response,
         }
 
 
-
-       const max_w = await staticOptionsRepository.findOne({where:{key:"max_withdraw"}})
-       const min_w = await staticOptionsRepository.findOne({where:{key:"min_withdraw"}})
+        const max_w = await staticOptionsRepository.findOne({where: {key: "max_withdraw"}})
+        const min_w = await staticOptionsRepository.findOne({where: {key: "min_withdraw"}})
 
         const maxWithdraw = max_w ? Number(max_w.value) : 0
         const minWithdraw = min_w ? Number(min_w.value) : 0
 
-        if (amount > maxWithdraw) throw RestException.notFound(__('transaction.max_withdraw',maxWithdraw.toString()));
-        if (amount < minWithdraw) throw RestException.notFound(__('transaction.min_withdraw',maxWithdraw.toString()));
+        if (amount > maxWithdraw) throw RestException.notFound(__mf('transaction.max_withdraw', {amount: maxWithdraw}));
+        if (amount < minWithdraw) throw RestException.notFound(__mf('transaction.min_withdraw', {amount: minWithdraw}));
 
         // Kartani topish
         const card = await cardRepository.findOne({
