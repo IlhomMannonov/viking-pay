@@ -72,7 +72,7 @@ async function transactionWorker() {
                 }
 
                 card.limit -= realDeposited;
-                await cardRepository.save(transaction);
+                await cardRepository.save(card);
             } else {
                 transaction.status = 'reject';
                 logger.info("❌ Pul tushmagan.");
