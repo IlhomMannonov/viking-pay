@@ -380,6 +380,7 @@ export const all_transactions = async (req: AuthenticatedRequest, res: Response,
             type,
             provider_id,
             status,
+            user_id,
         } = req.body;
 
         const page = parseInt(req.query.page as string) || 1;
@@ -427,6 +428,10 @@ export const all_transactions = async (req: AuthenticatedRequest, res: Response,
 
         if (type) {
             query.andWhere("transaction.type = :type", {type});
+        }
+        if (user_id) {
+            query.andWhere("transaction.user = :user_id", {user_id: user_id});
+
         }
 
         const allowedStatuses = [

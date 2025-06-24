@@ -15,11 +15,11 @@ export const seedInitialData = async (dataSource: DataSource) => {
             unique_key: "reports",
         },
         {
-            name: "Payment System",
+            name: "Платежная система",
             unique_key:"payment_system",
             order_index: 2,
             children: [
-                { name: "Ожидается платеж", order_index: 1, route: "withdraw-pending",unique_key:"withdraw-pending" },
+                { name: "Ожидается платеж", order_index: 2, route: "withdraw-pending",unique_key:"withdraw-pending" },
                 { name: "Транзакция кошелька", order_index: 2, route: "wallet-transaction" ,unique_key:"wallet-transaction" },
                 { name: "Транзакция провайдера", order_index: 3, route: "provider-transaction" ,unique_key:"provider-transaction" },
                 { name: "Настройки оплаты", order_index: 4, route: "payment-settings",unique_key:"payment-settings" },
@@ -42,6 +42,7 @@ export const seedInitialData = async (dataSource: DataSource) => {
             name: "Интеграция с Telegram",
             order_index: 5,
             route: "telegram-integration",
+            unique_key:"telegram-integration",
             children: [
                 {
                     name: "Аккунт",
