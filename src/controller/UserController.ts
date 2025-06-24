@@ -85,31 +85,31 @@ export const get_user = async (req: AuthenticatedRequest, res: Response, next: N
 // ADMIN
 export const all_users = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     try {
-
         // Query params
-        const page = parseInt(req.query.page as string) || 1;
-        const limit = parseInt(req.query.limit as string) || 20;
-        const q = (req.query.search as string)?.trim();
-        const is_system_user = req.query.is_system_user?.toString() === 'true';
+        const page = parseInt(req.query.page as string) || 1
+        const limit = parseInt(req.query.limit as string) || 20
+        const q = (req.query.search as string)?.trim()
+        const is_system_user = req.query.is_system_user?.toString() === 'true'
 
-        const skip = (page - 1) * limit;
+        const skip = (page - 1) * limit
 
+        // QueryBuilder
         const queryBuilder = userRepository.createQueryBuilder("user")
             .where("user.deleted = false")
-            .andWhere("is_bot_user <> :is_system_user", {is_system_user})
+            .andWhere("user.is_bot_user <> :is_system_user", { is_system_user })
 
-        // Search
+        // Search (if q exists)
         if (q) {
             queryBuilder.andWhere(
-                `(user.id::text ILIKE :q OR user.phone ILIKE :q OR user.first_name ILIKE :q OR user.last_name ILIKE :q)`,
-                {q: `%${q}%`}
-            );
+                `(CAST(user.id AS TEXT) ILIKE :q OR user.phone_number ILIKE :q OR user.first_name ILIKE :q OR user.last_name ILIKE :q)`,
+                { q: `%${q}%` }
+            )
         }
 
         // Total count
-        const total = await queryBuilder.getCount();
+        const total = await queryBuilder.getCount()
 
-        // Pagination + ordering
+        // Fetch users
         const users = await queryBuilder
             .orderBy("user.created_at", "DESC")
             .skip(skip)
@@ -127,26 +127,26 @@ export const all_users = async (req: AuthenticatedRequest, res: Response, next: 
                 'user.is_bot_user',
                 'user.created_at',
             ])
-            .getMany();
+            .getMany()
 
-        logger.info(`Fetched ${users.length} users (page ${page}/${Math.ceil(total / limit)})`);
+        // Log (optional)
+        logger.info(`Fetched ${users.length} users (page ${page}/${Math.ceil(total / limit)})`)
 
+        // Response
         res.status(200).json({
             message: "Foydalanuvchilar muvaffaqiyatli olindi",
             data: users,
-
             total,
             page,
             last_page: Math.ceil(total / limit),
             limit,
-
-        });
-        //njkfgsfuj
+        })
 
     } catch (error) {
-        next(error);
+        next(error)
     }
-};
+}
+
 
 export const update_profile = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     try {
