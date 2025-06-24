@@ -11,6 +11,7 @@ import {NewMessage, NewMessageEvent} from "telegram/events";
 import {getTelegramClient} from "../service/TelegramSessionPoolService";
 import {validFields} from "../utils/CustomErrors";
 import {Card} from "../entity/Card";
+import logger from "../config/logger";
 
 const apiId = 17403927; // O'zingizning API ID'ingizni yozing
 const apiHash = "6f3b02b8ba446d2c76a31033d6717dc2"; // O'zingizning API Hash'ingiz
@@ -52,6 +53,7 @@ export const enter_phone = async (req: AuthenticatedRequest, res: Response, next
         result = await sendCode();
 
         const phoneCodeHash = result.phoneCodeHash;
+        logger.info(`(UserId: ${req.user.id}) |  ${phone} raqamiga telegramdan kod jonatildi`)
 
         res.json({
             success: true,
@@ -91,10 +93,12 @@ export const enter_code = async (req: AuthenticatedRequest, res: Response, next:
         await client.disconnect()
         await client.destroy()
         let tg = await tgAccountRepository.findOne({where: {deleted: false, phone_number: phoneNumber}});
+        logger.info(`(UserId: ${req.user.id}) |  ${phoneNumber} raqami uchun tasdiqlash kodi kiritildi ${code}`)
 
         if (tg) {
             tg.session_id = String(session)
             await tgAccountRepository.save(tg)
+
         } else {
             tg = await tgAccountRepository.save({
                 name: phoneNumber + " Account",
@@ -170,6 +174,12 @@ export const connect_system_card = async (req: AuthenticatedRequest, res: Respon
         card.card_hold = card_hold;
         await cardRepository.save(card)
 
+
+        logger.info(`(UserId: ${req.user.id}) | Telegram ${tg_account.name} ning ${card_holder} kartaasi Sistemaning ${card.name} ga ulandi`)
+
+
+
+
         res.status(200).json({
             success: true, data: {system_card: card, telegram_card: card_holder}, message: __('card.connected')
         })
@@ -216,6 +226,7 @@ export const delete_account = async (req: AuthenticatedRequest, res: Response, n
         await cardRepository.save(system_cards)
         await tgAccountRepository.save(user)
 
+        logger.info(`(UserId: ${req.user.id}) | Telegram ${user.name} delete qilindi, Bungs ulangan sistema kartalari uzildi`)
 
         res.status(200).send({success: true});
 

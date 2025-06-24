@@ -53,10 +53,10 @@ async function transactionWorker() {
 
             const realDeposited = currentBalance - lastBalance;
 
-            logger.info(`📊 Oldingi balans: ${lastBalance}`);
-            logger.info(`💰 Hozirgi balans: ${currentBalance}`);
-            logger.info(`💸 Tranzaksiya miqdori: ${txAmount}`);
-            logger.info(`➕ Real tushgan pul: ${realDeposited}`);
+            logger.info(`TR_ID: ${transaction.id}   📊 Oldingi balans: ${lastBalance}`);
+            logger.info(`TR_ID: ${transaction.id}   💰 Hozirgi balans: ${currentBalance}`);
+            logger.info(`TR_ID: ${transaction.id}   💸 Tranzaksiya miqdori: ${txAmount}`);
+            logger.info(`TR_ID: ${transaction.id}   ➕ Real tushgan pul: ${realDeposited}`);
 
             if (realDeposited > 0) {
                 // Foydalanuvchi hisobiga tushgan pulni qo‘shamiz
@@ -64,12 +64,12 @@ async function transactionWorker() {
 
                 if (realDeposited === txAmount) {
                     transaction.status = 'success_pay';
-                    logger.info("✅ Pul to‘liq tushdi.");
+                    logger.info("TR_ID: ${transaction.id}   ✅ Pul to‘liq tushdi.");
                 } else {
                     transaction.status = 'partial_success';
                     transaction.soft_amount = realDeposited;
                     transaction.amount = realDeposited;
-                    logger.info(`⚠️ Pul qisman tushdi. yaratilgan: ${txAmount}, Tushgan pul: ${realDeposited}`);
+                    logger.info(`TR_ID: ${transaction.id}   ⚠️ Pul qisman tushdi. yaratilgan: ${txAmount}, Tushgan pul: ${realDeposited}`);
                 }
 
                 card.limit -= realDeposited;

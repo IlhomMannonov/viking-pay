@@ -157,9 +157,11 @@ export const seedPermissions = async (dataSource: DataSource) => {
         { name: "send-telegram-message", desc: "Телеграм ботга хабар юбориш", module_key: "telegram-message" },
         { name: "view-messages-history", desc: "Юборилган хабарлар тарихини кўриш", module_key: "telegram-message" },
 
-        { name: "add-slider", desc: "Слайдер яратиш", module_key: "settings" },
-        { name: "update-slider", desc: "Слайдерни таҳрирлаш", module_key: "settings" },
-        { name: "delete-slider", desc: "Слайдерни ўчириш", module_key: "settings" },
+        { name: "add-slider", desc: "Слайдер яратиш", module_key: "slider" },
+        { name: "update-slider", desc: "Слайдерни таҳрирлаш", module_key: "slider" },
+        { name: "delete-slider", desc: "Слайдерни ўчириш", module_key: "slider" },
+
+        { name: "see_logs", desc: "Логларни коърыш ", module_key: "logs" },
     ]
 
 
