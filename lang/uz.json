@@ -14,7 +14,8 @@
     "no_user_in_header": "Usersiz kirish mumkun emas",
     "not_found": "Foydalanuvchi topilmadi",
     "required_this_statuses": "{statuses} quydagi statuslar mumkun",
-    "updated_status": "Foydalanuvchi statusi={status}"
+    "updated_status": "Foydalanuvchi statusi={status}",
+    "not_full_auth_for_phone": "Aval Telefon raqamni aktivlashtiring"
   },
   "transaction": {
     "not_found": "Tranzaksiya topilmadi",

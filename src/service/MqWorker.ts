@@ -68,7 +68,8 @@ async function transactionWorker() {
                 } else {
                     transaction.status = 'partial_success';
                     transaction.soft_amount = realDeposited;
-                    logger.info("⚠️ Pul qisman tushdi.");
+                    transaction.amount = realDeposited;
+                    logger.info(`⚠️ Pul qisman tushdi. yaratilgan: ${txAmount}, Tushgan pul: ${realDeposited}`);
                 }
 
                 card.limit -= realDeposited;

@@ -11,8 +11,6 @@ import logger from '../config/logger';
 import {Not} from "typeorm";
 import {User} from "../entity/User";
 import {RabbitMQService} from "../service/MQServise";
-import {ifError} from "node:assert";
-import * as timers from "node:timers";
 import {groupBy} from 'lodash';
 import {StaticOptions} from "../entity/StaticOptions"; // kerak bo‘lsa o‘rnat: npm i lodash
 
@@ -29,6 +27,8 @@ export const create_deposit = async (req: AuthenticatedRequest, res: Response, n
         if (!req.user) throw RestException.badRequest(__('user.no_user_in_header'))
         validFields(['amount'], req.body)
         const {amount} = req.body;
+
+        if (!req.user.phone_number) throw RestException.badRequest(__('user.not_full_auth_for_phone'))
 
         const max_d = await staticOptionsRepository.findOne({where: {key: "max_deposit"}})
         const min_d = await staticOptionsRepository.findOne({where: {key: "min_deposit"}})
@@ -74,6 +74,8 @@ export const complete_pay = async (req: AuthenticatedRequest, res: Response, nex
     try {
 
         if (!req.user) throw RestException.badRequest(__('user.no_user_in_header'))
+        // USER TOLIQ AUTH QILGANMI?
+        if (!req.user.phone_number) throw RestException.badRequest(__('user.not_full_auth_for_phone'))
 
         const {trans_id, status} = req.body;
 
@@ -309,6 +311,8 @@ export const withdraw_balance = async (req: AuthenticatedRequest, res: Response,
             throw RestException.badRequest(__('transaction.invalid_amount'));
         }
 
+        // USER TOLIQ AUTH QILGANMI?
+        if (!req.user.phone_number) throw RestException.badRequest(__('user.not_full_auth_for_phone'))
 
         const max_w = await staticOptionsRepository.findOne({where: {key: "max_withdraw"}})
         const min_w = await staticOptionsRepository.findOne({where: {key: "min_withdraw"}})
@@ -389,6 +393,7 @@ export const all_transactions = async (req: AuthenticatedRequest, res: Response,
         const query = transactionRepository
             .createQueryBuilder("transaction")
             .leftJoin("transaction.user", "user")
+            .leftJoin("transaction.provider", "provider")
             .select([
                 'transaction.id',
                 'transaction.created_at',
@@ -409,6 +414,11 @@ export const all_transactions = async (req: AuthenticatedRequest, res: Response,
                 'user.phone_number', // Qo‘shildi
                 'user.amount',
                 'user.chat_id',
+                'provider.id',
+                'provider.name',
+                'provider.logo_id',
+                'provider.min_amount',
+                'provider.max_amount',
             ]);
 
         if (q) {
