@@ -21,6 +21,7 @@ import cors from "cors";
 import sliderRouter from "./routers/SliderRouter";
 import statisticsRouter from "./routers/StatisticsRouter";
 import staticOptionsRouter from "./routers/StaticOptionsRouter";
+import logsRouter from "./routers/LogsRouter";
 
 
 const app: Application = express();
@@ -47,6 +48,7 @@ app.use('/api/v1/role-permission', rolePermissionRouter);
 app.use('/api/v1/slider', sliderRouter);
 app.use('/api/v1/statics', statisticsRouter);
 app.use('/api/v1/static-options', staticOptionsRouter);
+app.use('/api/v1/logs', logsRouter);
 
 
 app.use(errorHandler);
