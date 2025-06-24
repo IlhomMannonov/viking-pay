@@ -20,7 +20,7 @@ export const create = async (req: AuthenticatedRequest, res: Response, next: Nex
 
         const {name, number, card_img} = req.body;
 
-        const existingCard = await cardRepository.exists({where: {number: number, deleted: false, is_user_card: true}})
+        const existingCard = await cardRepository.exists({where: {number: number, deleted: false, is_user_card: true, user_id: req.user.id}});
         if (existingCard) throw RestException.badRequest(__('card.exists'))
         const newCard = cardRepository.create({
             name,
@@ -114,14 +114,14 @@ export const user_cards = async (req: AuthenticatedRequest, res: Response, next:
 
         const user = await userRepository.findOne({
             where: {deleted: false, id: Number(req.params.id)},
-            select: ['id', 'first_name', 'last_name', 'updated_at', 'created_at', 'amount','phone_number','status']
+            select: ['id', 'first_name', 'last_name', 'updated_at', 'created_at', 'amount', 'phone_number', 'status']
         });
         const [cards, total] = await cardRepository.findAndCount({
             where: {deleted: false, is_user_card: true, user_id: Number(req.params.id)},
             skip: offset,
             take: limit,
             order: {id: 'DESC'},
-            select: ['id', 'name', 'number', 'created_at', 'status','card_img'],
+            select: ['id', 'name', 'number', 'created_at', 'status', 'card_img'],
         });
 
         res.json({
