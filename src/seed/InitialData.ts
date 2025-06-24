@@ -50,8 +50,8 @@ export const seedInitialData = async (dataSource: DataSource) => {
             ]
         },
         {
-            name: "Users",
-            order_index: 6,
+            name: "Bot Users",
+            order_index: 69,
             route: "users",
         },
         {
@@ -74,6 +74,11 @@ export const seedInitialData = async (dataSource: DataSource) => {
                 { name: "Empty-1", order_index: 2, route: "-1" },
                 { name: "Empty-2", order_index: 3, route: "-2" },
             ],
+        },
+        {
+            name: "Profile",
+            order_index: 10,
+            route: "profile",
         },
     ]
 
