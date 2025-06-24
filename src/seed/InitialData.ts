@@ -9,81 +9,99 @@ export const seedInitialData = async (dataSource: DataSource) => {
 
     const modules = [
         {
-            name: "Hisobotlar",
+            name: "Отчеты",
             order_index: 1,
             route: "reports",
+            unique_key: "reports",
         },
         {
             name: "Payment System",
+            unique_key:"payment_system",
             order_index: 2,
             children: [
-                { name: "Chiqarish Kutilmoqda", order_index: 1, route: "withdraw-pending" },
-                { name: "Wallet Transaction", order_index: 2, route: "wallet-transaction" },
-                { name: "Provider Transction", order_index: 3, route: "provider-transaction" },
-                { name: "Payment Settings", order_index: 4, route: "payment-settings" },
+                { name: "Ожидается платеж", order_index: 1, route: "withdraw-pending",unique_key:"withdraw-pending" },
+                { name: "Транзакция кошелька", order_index: 2, route: "wallet-transaction" ,unique_key:"wallet-transaction" },
+                { name: "Транзакция провайдера", order_index: 3, route: "provider-transaction" ,unique_key:"provider-transaction" },
+                { name: "Настройки оплаты", order_index: 4, route: "payment-settings",unique_key:"payment-settings" },
             ],
         },
         {
-            name: "Tizim kartalari",
+            name: "Системные карты",
             order_index: 3,
             route: "system-cards",
+            unique_key:"system-cards",
+
         },
         {
-            name: "Provider",
+            name: "Провайдер",
             order_index: 4,
             route: "provider",
+            unique_key:"provider",
         },
         {
-            name: "Telegram integration",
+            name: "Интеграция с Telegram",
             order_index: 5,
+            route: "telegram-integration",
             children: [
                 {
-                    name: "Accounts",
+                    name: "Аккунт",
                     order_index: 6,
                     route: "telegram-accounts",
+                    unique_key:"telegram-accounts",
                 },
                 {
-                    name: "Cards management",
+                    name: "Управление картами",
                     order_index: 6,
                     route: "cards-management",
+                    unique_key:"cards-management",
                 },
             ]
         },
         {
-            name: "Bot Users",
+            name: "Пользователи бота",
             order_index: 2,
             route: "users",
+            unique_key:"users",
         },
         {
-            name: "Hodimlar",
+            name: "Сотрудники",
             order_index: 6,
             route: "staff",
+            unique_key:"staff",
             children:[
-                { name: "Users", order_index: 1, route: "staff-users" },
-                { name: "Roles", order_index: 2, route: "roles" },
-                { name: "Permission", order_index: 4, route: "permissions" },
+                { name: "Пользователи", order_index: 1, route: "staff-users" ,unique_key:"staff-users" },
+                { name: "Роли", order_index: 2, route: "roles", unique_key:"roles" },
+                { name: "Разрешение", order_index: 4, route: "permissions", unique_key:"permissions" },
 
             ]
         },
         {
-            name: "Settings",
+            name: "Настройки",
             order_index: 7,
             route: "settings",
+            unique_key:"settings",
             children: [
-                { name: "Static Options", order_index: 1, route: "static-options" },
-                { name: "Empty-1", order_index: 2, route: "-1" },
-                { name: "Empty-2", order_index: 3, route: "-2" },
+                { name: "Статические параметры", order_index: 1, route: "static-options",unique_key:"settings" },
+                { name: "Empty-1", order_index: 2, route: "-1",unique_key:"1empty" },
+                { name: "Empty-2", order_index: 3, route: "-2",unique_key:"2empty" },
             ],
         },
         {
-            name: "Profile",
+            name: "Телеграм Сообщение",
+            order_index: 9,
+            route: "telegram-message",
+            unique_key:"telegram-message",
+        },
+        {
+            name: "Профиль",
             order_index: 10,
             route: "profile",
+            unique_key:"profile",
         },
     ]
 
     for (const mod of modules) {
-        let parent = await moduleRepository.findOne({ where: { name: mod.name } })
+        let parent = await moduleRepository.findOne({ where: { unique_key: mod.unique_key } })
         if (parent) {
             moduleRepository.merge(parent, mod)
             parent = await moduleRepository.save(parent)
@@ -94,7 +112,7 @@ export const seedInitialData = async (dataSource: DataSource) => {
         if (mod.children && mod.children.length > 0) {
             for (const child of mod.children) {
                 const data = { ...child, module: parent, module_id: parent.id }
-                let existing = await moduleRepository.findOne({ where: { name: child.name } })
+                let existing = await moduleRepository.findOne({ where: { unique_key: child.unique_key } })
                 if (existing) {
                     moduleRepository.merge(existing, data)
                     await moduleRepository.save(existing)
@@ -108,56 +126,63 @@ export const seedInitialData = async (dataSource: DataSource) => {
     console.log('Modules seeded/updated successfully')
 }
 
-
-
 export const seedPermissions = async (dataSource: DataSource) => {
     const permissionRepository = dataSource.getRepository(Permission)
+    const moduleRepository = dataSource.getRepository(Module)
 
     const permissions = [
-        {"name": "system-card-create", "desc": "Sistemada karta yaratish", "module_id": 3},
-        {"name": "system-card-get-all", "desc": "Sistemadagi kartalarni ko'rish", "module_id": 3},
-        {"name": "system-card-delete", "desc": "Sistemadagi kartani o'chirish", "module_id": 3},
-        {"name": "system-card-update", "desc": "Sistemadagi kartani o'zkartirish", "module_id": 3},
-        {"name": "view-user-cards", "desc": "Userning kartalarini ko'rish", "module_id": 3},
-        {"name": "provider-create", "desc": "Providerni yaratish", "module_id": 4},
-        {"name": "provider-delete", "desc": "Providerni O'chirish", "module_id": 4},
-        {"name": "provider-get-all", "desc": "Providerlar ro'yxatini ko'rish", "module_id": 4},
-        {"name": "provider-update", "desc": "Providerni yangilash", "module_id": 4},
-        {"name": "telegram-connect-account", "desc": "Telegram accountni sistemaga ulash", "module_id": 5},
-        {"name": "telegram-get-cards", "desc": "Card Xabardagi kartalarni ko'rish", "module_id": 5},
-        {
-            "name": "connect-card-to-system-card",
-            "desc": "CardXabar botdagi kartani sistema kartasi bilan ulash",
-            "module_id": 5
-        },
-        {"name": "view-telegram-account", "desc": "Telegram userlar ro'yxatini ko'rish", "module_id": 5},
-        {"name": "delete-telegram-account", "desc": "Sistemadan telegram accountni o'chirish", "module_id": 5},
-        {"name": "deposit-wallet", "desc": "User hisobini ruchnoy to'ldirish", "module_id": 2},
-        {"name": "view-all-transaction", "desc": "Barcha tranzaksiyalarni ko'rish", "module_id": 2},
-        {
-            "name": "accept-reject-transaction",
-            "desc": "Hamyon Tranzaksiyani tasdiqlash va bekor qilish",
-            "module_id": 2
-        },
-        {"name": "view-all-users", "desc": "Tizim va Bot userlarini ko'rish", "module_id": 2},
-        {"name": "send-telegram-message", "desc": "Telegram botga xabar jonatish", "module_id": 2},
-        {"name": "view-messages-history", "desc": "Telegramga yuborilayotgan xabarlarini ko'rish", "module_id": 2},
-        {"name": "add-slider", "desc": "Slider yaratish", "module_id": 7},
-        {"name": "update-slider", "desc": "Slider taxrirlash", "module_id": 7},
-        {"name": "delete-slider", "desc": "Sliderni o'chirish", "module_id": 7},
-    ];
+        { name: "system-card-create", desc: "Системада карта яратиш", module_key: "system-cards" },
+        { name: "system-card-get-all", desc: "Системадаги карталарни кўриш", module_key: "system-cards" },
+        { name: "system-card-delete", desc: "Системадаги картани ўчириш", module_key: "system-cards" },
+        { name: "system-card-update", desc: "Системадаги картани ўзгартириш", module_key: "system-cards" },
+        { name: "view-user-cards", desc: "Фойдаланувчи карталарини кўриш", module_key: "system-cards" },
+
+        { name: "provider-create", desc: "Провайдер яратиш", module_key: "provider" },
+        { name: "provider-delete", desc: "Провайдерни ўчириш", module_key: "provider" },
+        { name: "provider-get-all", desc: "Провайдерлар рўйхатини кўриш", module_key: "provider" },
+        { name: "provider-update", desc: "Провайдерни янгилаш", module_key: "provider" },
+
+        { name: "telegram-connect-account", desc: "Телеграм аккаунтни тизимга улаш", module_key: "telegram-accounts" },
+        { name: "telegram-get-cards", desc: "CardXabar'даги карталарни кўриш", module_key: "cards-management" },
+        { name: "connect-card-to-system-card", desc: "CardXabar картасини система картасига улаш", module_key: "cards-management" },
+        { name: "view-telegram-account", desc: "Телеграм фойдаланувчиларини кўриш", module_key: "telegram-accounts" },
+        { name: "delete-telegram-account", desc: "Телеграм аккаунтни ўчириш", module_key: "telegram-accounts" },
+
+        { name: "deposit-wallet", desc: "Фойдаланувчи ҳисобига қўлда пул қўшиш", module_key: "wallet-transaction" },
+        { name: "view-all-transaction", desc: "Барча транзакцияларни кўриш", module_key: "wallet-transaction" },
+        { name: "accept-reject-transaction", desc: "Транзакцияни тасдиқлаш ёки рад этиш", module_key: "wallet-transaction" },
+
+        { name: "view-all-users", desc: "Тизим ва бот фойдаланувчиларини кўриш", module_key: "users" },
+
+        { name: "send-telegram-message", desc: "Телеграм ботга хабар юбориш", module_key: "telegram-message" },
+        { name: "view-messages-history", desc: "Юборилган хабарлар тарихини кўриш", module_key: "telegram-message" },
+
+        { name: "add-slider", desc: "Слайдер яратиш", module_key: "settings" },
+        { name: "update-slider", desc: "Слайдерни таҳрирлаш", module_key: "settings" },
+        { name: "delete-slider", desc: "Слайдерни ўчириш", module_key: "settings" },
+    ]
+
 
     for (const perm of permissions) {
-        const exists = await permissionRepository.findOne({
-            where: {name: perm.name}
-        });
+        const module = await moduleRepository.findOne({ where: { unique_key: perm.module_key } })
+
+        if (!module) {
+            console.warn(`Module with unique_key "${perm.module_key}" not found.`)
+            continue
+        }
+
+        const exists = await permissionRepository.findOne({ where: { name: perm.name } })
 
         if (!exists) {
-            await permissionRepository.save(permissionRepository.create(perm));
+            await permissionRepository.save(permissionRepository.create({
+                name: perm.name,
+                desc: perm.desc,
+                module_id: module.id,
+            }))
         }
     }
 
-    console.log('Permissions seeded successfully');
+    console.log("Permissions seeded successfully")
 }
 
 export const seedStaticOptions = async (dataSource: DataSource) => {

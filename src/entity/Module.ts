@@ -11,6 +11,9 @@ export class Module extends BaseEntityFull {
     name!: string;
 
     @Column({type: 'varchar', nullable: true})
+    unique_key!: string;
+
+    @Column({type: 'varchar', nullable: true})
     route!: string;
 
 
