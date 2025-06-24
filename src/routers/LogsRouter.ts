@@ -7,7 +7,7 @@ const router: Router = Router();
 router.route('/all')
     .get(all_logs);
 
-router.route('/all')
+router.route('/get/:filename')
     .get(get_log);
 
 export default router;
