@@ -82,6 +82,7 @@ export const seedInitialData = async (dataSource: DataSource) => {
             unique_key:"settings",
             children: [
                 { name: "Статические параметры", order_index: 1, route: "static-options",unique_key:"static-options" },
+                { name: "Слайдер", order_index: 2, route: "slider",unique_key:"slider" },
                 { name: "Empty-1", order_index: 2, route: "-1",unique_key:"1empty" },
                 { name: "Empty-2", order_index: 3, route: "-2",unique_key:"2empty" },
             ],
