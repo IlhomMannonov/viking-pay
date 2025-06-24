@@ -96,7 +96,7 @@ export const all_users = async (req: AuthenticatedRequest, res: Response, next: 
         // QueryBuilder
         const queryBuilder = userRepository.createQueryBuilder("user")
             .where("user.deleted = false")
-            .andWhere("user.is_bot_user <> :is_system_user", { is_system_user })
+            .andWhere("(user.is_bot_user <> :is_system_user)", { is_system_user })
 
         // Search (if q exists)
         if (q) {
