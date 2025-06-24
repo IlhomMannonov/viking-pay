@@ -1,19 +1,28 @@
-import winston from 'winston';
+import winston from 'winston'
+import DailyRotateFile from 'winston-daily-rotate-file'
 
 // Logger konfiguratsiyasi
 const logger = winston.createLogger({
-    level: 'info', // Standart daraja: info
+    level: 'info',
     format: winston.format.combine(
-        winston.format.colorize(), // Ranglarni qo‘shish
-        winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }), // Vaqtni formatlash
+        winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
         winston.format.printf(({ timestamp, level, message }) => {
-            return `[${timestamp}] ${level}: ${message}`; // Log formatini sozlash
+            return `[${timestamp}] ${level}: ${message}`
         })
     ),
     transports: [
-        new winston.transports.Console(), // Konsolga log yozish
-        new winston.transports.File({ filename: 'logs/app.log' }) // Faylga log yozish
-    ]
-});
+        new winston.transports.Console(),
 
-export default logger;
+        new DailyRotateFile({
+            dirname: '/app/logs',              // Log papkasi
+            filename: 'app-%DATE%.log',        // Har kunlik fayl nomi
+            datePattern: 'YYYY-MM-DD',         // Sana formati
+            zippedArchive: false,              // Gz qilish kerakmi — optional
+            maxSize: '10m',                    // Har bir fayl maksimal o‘lchami
+            maxFiles: '7d',                    // Oxirgi 7 kunni saqlaydi
+            level: 'info'                      // Log darajasi
+        })
+    ]
+})
+
+export default logger
