@@ -51,7 +51,7 @@ export const seedInitialData = async (dataSource: DataSource) => {
         },
         {
             name: "Bot Users",
-            order_index: 69,
+            order_index: 2,
             route: "users",
         },
         {
