@@ -1,11 +1,12 @@
-import {Column, Entity} from 'typeorm';
+import {Column, Entity, JoinColumn, ManyToOne} from 'typeorm';
 import {BaseEntityFull} from "./template/BaseEntityFull";
+import {User} from "./User";
 
-@Entity('role')
-export class Role extends BaseEntityFull {
+@Entity('telegram_integration')
+export class TelegramIntegration extends BaseEntityFull {
 
     @Column({type: 'varchar', nullable: false})
-    name!: string;
+    type!: string;
 
 
     // CHAP TOMONDAKI KO'RINISHNI BELGILAYDI
