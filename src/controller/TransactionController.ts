@@ -506,11 +506,11 @@ export const deposit_withdraw_manual = async (req: AuthenticatedRequest, res: Re
             });
 
             if (type === 'in') {
-                user.amount += Number(amount);
+                user.amount = Number(user.amount) + Number(amount);
                 logger.info(`💰 [DEPOSIT] ${user_id} ID foydalanuvchisiga, ${me.id} tomonidan ${amount} so'm pul solindi`);
             } else {
                 if (amount > user.amount) throw RestException.notFound("User balance must upper amount");
-                user.amount -= Number(amount);
+                user.amount = Number(user.amount) - Number(amount);
                 logger.info(`💸 [WITHDRAW] ${user_id} ID foydalanuvchisiga, ${me.id} tomonidan ${amount} so'm pul yechildi`);
             }
             await manager.save(user);
