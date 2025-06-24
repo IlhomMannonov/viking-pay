@@ -1,10 +1,13 @@
 import {Router} from "express";
-import {all_logs} from "../controller/LogsController";
+import {all_logs, get_log} from "../controller/LogsController";
 
 const router: Router = Router();
 
 
 router.route('/all')
     .get(all_logs);
+
+router.route('/all')
+    .get(get_log);
 
 export default router;
