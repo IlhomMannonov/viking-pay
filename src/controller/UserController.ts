@@ -90,7 +90,7 @@ export const all_users = async (req: AuthenticatedRequest, res: Response, next: 
         const page = parseInt(req.query.page as string) || 1;
         const limit = parseInt(req.query.limit as string) || 20;
         const q = (req.query.search as string)?.trim();
-        const is_system_user = req.query.is_system_user || false;
+        const is_system_user = req.query.is_system_user?.toString() === 'true';
 
         const skip = (page - 1) * limit;
 
