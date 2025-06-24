@@ -416,3 +416,7 @@
 [2025-06-07 23:44:25] [32minfo[39m: ⚠️ Pul qisman tushdi.
 [2025-06-09 12:19:47] [32minfo[39m: {"Success":false,"MessageId":100365,"Message":"Касса удалена! Доступ запрещен!"}
 [2025-06-09 12:19:47] [31merror[39m: CashDesk depozitdan xato bo'ldi yoki userni saqlashda
+[2025-06-24 14:24:58] [32minfo[39m: Fetched 2 users (page 1/1)
+[2025-06-24 14:25:01] [32minfo[39m: Fetched 2 users (page 1/1)
+[2025-06-24 14:25:03] [32minfo[39m: Fetched 2 users (page 1/1)
+[2025-06-24 14:25:20] [32minfo[39m: Fetched 0 users (page 1/0)

@@ -88,7 +88,7 @@ export const all_users = async (req: AuthenticatedRequest, res: Response, next: 
         // Query params
         const page = parseInt(req.query.page as string) || 1
         const limit = parseInt(req.query.limit as string) || 20
-        const q = (req.query.search as string)?.trim()
+        const q = (req.query.q as string)?.trim()
         const is_system_user = req.query.is_system_user?.toString() === 'true'
 
         const skip = (page - 1) * limit
@@ -122,6 +122,7 @@ export const all_users = async (req: AuthenticatedRequest, res: Response, next: 
                 'user.patron',
                 'user.last_login_time',
                 'user.phone_verified',
+                'user.logo_id',
                 'user.chat_id',
                 'user.amount',
                 'user.is_bot_user',
