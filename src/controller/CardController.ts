@@ -32,17 +32,24 @@ export const create = async (req: AuthenticatedRequest, res: Response, next: Nex
 // READ ALL
 export const getAll = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-        const page = parseInt(req.query.page as string) || 1;
-        const limit = parseInt(req.query.limit as string) || 10;
-        const offset = (page - 1) * limit;
+        const page = parseInt(req.query.page as string) || 1
+        const limit = parseInt(req.query.limit as string) || 10
+        const offset = (page - 1) * limit
+        const query = (req.query.q as string)?.trim()
 
-        const [cards, total] = await cardRepository
+        const qb = cardRepository
             .createQueryBuilder("card")
             .leftJoinAndSelect("card.tg_account", "tg_account")
             .where("card.deleted = :deleted AND card.is_user_card = :is_user_card", {
                 deleted: false,
-                is_user_card: false
+                is_user_card: false,
             })
+
+        if (query) {
+            qb.andWhere("card.name ILIKE :query", { query: `%${query}%` })
+        }
+
+        const [cards, total] = await qb
             .orderBy("card.id", "DESC")
             .skip(offset)
             .take(limit)
@@ -59,18 +66,18 @@ export const getAll = async (req: Request, res: Response, next: NextFunction): P
                 "tg_account.phone_number",
                 "tg_account.name"
             ])
-            .getManyAndCount();
+            .getManyAndCount()
 
         res.json({
             data: cards,
             total,
             page,
             totalPages: Math.ceil(total / limit),
-        });
+        })
     } catch (err) {
-        next(err);
+        next(err)
     }
-};
+}
 
 
 
