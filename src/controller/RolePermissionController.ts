@@ -127,7 +127,7 @@ export const get_one_role = async (req: AuthenticatedRequest, res: Response, nex
                 };
             });
 
-        res.status(200).json({success: true, data: modulesWithSubmodules});
+        res.status(200).json({success: true, data: {modulesWithSubmodules, ...role}});
 
     } catch (err) {
         next(err);
