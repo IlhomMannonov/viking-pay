@@ -24,7 +24,7 @@ export const register = async (req: Request, res: Response, next: NextFunction):
         }
 
         // Foydalanuvchi mavjudligini tekshirish
-        const existsUser = await userRepository.count({where: {phone_number: phone}});
+        const existsUser = await userRepository.count({where: {phone_number: phone, deleted:false}});
 
         if (existsUser > 0) {
             res.status(400).json({message: "Foydalanuvchi allaqachon mavjud"});
