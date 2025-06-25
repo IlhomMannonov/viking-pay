@@ -23,10 +23,12 @@ export const register = async (req: Request, res: Response, next: NextFunction):
             return;
         }
 
-        // Foydalanuvchi mavjudligini tekshirish
-        const existsUser = await userRepository.count({where: {phone_number: phone}});
 
-        if (existsUser > 0) {
+
+        // Foydalanuvchi mavjudligini tekshirish
+        const existsUser = await userRepository.exists({where: {phone_number: phone, deleted:false}});
+
+        if (existsUser) {
             res.status(400).json({message: "Foydalanuvchi allaqachon mavjud"});
             return;
         }
@@ -57,8 +59,7 @@ export const login = async (req: Request, res: Response, next: NextFunction): Pr
         validFields(["password", "username"], req.body);
 
         // 2. Foydalanuvchini topish
-        const user = await userRepository.findOne({where: {phone_number: username}});
-
+        const user = await userRepository.findOne({where: {phone_number: username, deleted:false}});
         if (!user) {
             res.status(401).json({message: "Foydalanuvchi yoki parol noto‘g‘ri!", success: false});
             return;

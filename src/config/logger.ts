@@ -14,7 +14,7 @@ const logger = winston.createLogger({
         new winston.transports.Console(),
 
         new DailyRotateFile({
-            dirname: '/app/logs',              // Log papkasi
+            dirname: '../logs',              // Log papkasi
             filename: 'app-%DATE%.log',        // Har kunlik fayl nomi
             datePattern: 'YYYY-MM-DD',         // Sana formati
             zippedArchive: false,              // Gz qilish kerakmi — optional

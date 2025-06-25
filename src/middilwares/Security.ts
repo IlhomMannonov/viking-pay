@@ -57,8 +57,9 @@ export const verifyJwtToken = (permission: string | null = null) => {
         const user = await userRepository.findOne({where: {id: decodedToken.id, deleted: false}});
         if (!user) return res.status(403).json({message: "User not found"});
         user.last_login_time = new Date();
-        userRepository.save(user);
         req.user = user;
+
+        await userRepository.save(user);
 
         // ✅ Agar super admin bo‘lsa, boshqa kodlar ishlamasin
         if (user.super_admin) return next();
@@ -66,14 +67,14 @@ export const verifyJwtToken = (permission: string | null = null) => {
         // PERMISSION tekshirish
         if (permission) {
             const role = await roleRepository.findOne({where: {id: Number(user.role_id)}});
-            if (!role) return res.status(403).json({ message: "Ruxsat yo‘q" });
+            if (!role) return res.status(403).json({message: "Ruxsat yo‘q"});
 
             const permission_ids = role.permissions;
             const pm = await permissionRepository.findOne({where: {name: permission, deleted: false}, select: ['id']});
-            if (!pm) return res.status(403).json({ message: "Ruxsat yo‘q" });
+            if (!pm) return res.status(403).json({message: "Ruxsat yo‘q"});
 
             const hasPermission = permission_ids.includes(pm.id);
-            if (!hasPermission) return res.status(403).json({ message: "Ruxsat yo‘q" });
+            if (!hasPermission) return res.status(403).json({message: "Ruxsat yo‘q"});
         }
 
         next(); // ✅ faqat barcha tekshiruvlardan o‘tgan bo‘lsa
