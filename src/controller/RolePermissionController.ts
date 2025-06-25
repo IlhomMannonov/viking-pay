@@ -129,7 +129,7 @@ export const get_one_role = async (req: AuthenticatedRequest, res: Response, nex
 
         res.status(200).json({
             success: true,
-            data: {modulesWithSubmodules, ...{role_id: role.id, role_name: role.name}}
+            data: {modules:modulesWithSubmodules, ...{role_id: role.id, role_name: role.name}}
         });
 
     } catch (err) {
