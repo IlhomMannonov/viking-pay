@@ -133,7 +133,7 @@ export const setWebhook = (req: Request, res: Response) => {
 };
 
 
-// bot.launch();
+bot.launch();
 export const launchBot = () => {
     console.log('Telegram bot started');
 };
