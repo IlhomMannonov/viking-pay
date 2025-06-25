@@ -57,7 +57,7 @@ export const login = async (req: Request, res: Response, next: NextFunction): Pr
         validFields(["password", "username"], req.body);
 
         // 2. Foydalanuvchini topish
-        const user = await userRepository.findOne({where: {phone_number: username}});
+        const user = await userRepository.findOne({where: {phone_number: username, deleted:false}});
 
         if (!user) {
             res.status(401).json({message: "Foydalanuvchi yoki parol noto‘g‘ri!", success: false});
