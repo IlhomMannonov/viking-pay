@@ -127,7 +127,10 @@ export const get_one_role = async (req: AuthenticatedRequest, res: Response, nex
                 };
             });
 
-        res.status(200).json({success: true, data: {modulesWithSubmodules, ...role}});
+        res.status(200).json({
+            success: true,
+            data: {modulesWithSubmodules, ...{role_id: role.id, role_name: role.name}}
+        });
 
     } catch (err) {
         next(err);
@@ -203,7 +206,7 @@ export const assign_to_user = async (req: AuthenticatedRequest, res: Response, n
     }
 }
 
-export const get_user_modules = async(role_id:number) => {
+export const get_user_modules = async (role_id: number) => {
     const role = await roleRepository.findOne({where: {id: role_id, deleted: false}});
     if (!role) throw RestException.notFound('Role not found');
 
