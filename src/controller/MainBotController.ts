@@ -17,7 +17,7 @@ bot.start(async (ctx) => {
             ])
                 .resize()
         );
-    }else{
+    } else {
         await userHome(ctx)
 
     }
@@ -101,13 +101,12 @@ export const userHome = async (ctx: Context) => {
         Markup.inlineKeyboard([
             [Markup.button.url("🆘 Начать", "https://t.me/VikingPaybot?startapp=start")]
         ])
-
     );
 
     // await ctx.reply("👆 Bu to'lov tizimlari orqali to'lov qilishingiz uchun avval to'lov accountlarinigzni faollashtiring", Markup.removeKeyboard())
 };
 export const getBotUser = async (chat_id: string): Promise<User> => {
-    const findUser = await userRepository.findOne({where: {chat_id, deleted: false}});
+    const findUser = await userRepository.findOne({where: {chat_id, deleted: false}, order: {id: "desc"}});
     if (!findUser) {
         const newUser = userRepository.create({
             chat_id,
@@ -133,7 +132,7 @@ export const setWebhook = (req: Request, res: Response) => {
 };
 
 
-bot.launch();
+// bot.launch();
 export const launchBot = () => {
     console.log('Telegram bot started');
 };

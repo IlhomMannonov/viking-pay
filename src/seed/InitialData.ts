@@ -162,6 +162,11 @@ export const seedPermissions = async (dataSource: DataSource) => {
         { name: "delete-slider", desc: "Слайдерни ўчириш", module_key: "slider" },
 
         { name: "see_logs", desc: "Логларни коърыш ", module_key: "logs" },
+
+        { name: "create-staff-user", desc: "Ҳодим яратиш", module_key: "staff-users" },
+        { name: "delete-staff-user", desc: "Ҳодим яратиш", module_key: "staff-users" },
+        { name: "see-staff-user", desc: "Ҳодимлар рўйхатини кўриш", module_key: "staff-users" },
+        { name: "update-staff-user", desc: "Ҳодимни тахрирлаш", module_key: "staff-users" },
     ]
 
 
