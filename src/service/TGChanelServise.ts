@@ -50,7 +50,6 @@ export async function send_message(type: string, trans: Transaction): Promise<vo
     }
 }
 
-
 function generateWalletMessage(data: {
     id: string
     user_id: number
@@ -60,24 +59,24 @@ function generateWalletMessage(data: {
     desc?: string
     date: Date
 }): string {
-    const {id, user_id, program, amount, card_number, desc, date} = data
+    const { id, user_id, program, amount, card_number, desc, date } = data
 
     const emoji = program ? '📥' : '📤'
     const title = program ? 'КИРИМ ТУШДИ (wallet)' : 'ЧИҚИМ БЎЛДИ (wallet)'
 
     return `${emoji} ${title}
 
-\`🔁 ID: ${id}\`
-\`👤 Фойдаланувчи ID: ${user_id}\`
+🆔 ID: <code>${id}</code> 
+👤 Фойдаланувчи ID: <code>${user_id}</code>
 💳 Карта: ${card_number}
 💸 Сумма: ${amount.toLocaleString('ru-RU')} сўм
-👜 Манба: Hamyon
+👜 Манба: Hamён
 📝 Изоҳ: ${desc || '-'}
 
 🕒 Вақт: ${formatDateToYYYYMMDDHHmm(date)}
 `
-
 }
+
 
 function generateProviderMessage(data: {
     id: string
@@ -90,7 +89,7 @@ function generateProviderMessage(data: {
     desc?: string
     date: Date
 }): string {
-    const {id, program, amount, operation_id, user_id, provider_id, provider_name, desc, date} = data
+    const { id, program, amount, operation_id, user_id, provider_id, provider_name, desc, date } = data
 
     const emoji = program ? '📥' : '📤'
     const title = program
@@ -99,10 +98,10 @@ function generateProviderMessage(data: {
 
     return `${emoji} ${title}
 
-\`🔁 ID: ${id}\`
-\`🧾 Транзакция ID: ${operation_id}\`
-\`👤 Фойдаланувчи ID: ${user_id}\`
-\`🏢 Провайдер ID: ${provider_id}\`
+🆔 ID: <code>${id}</code> 
+🧾 Транзакция ID: <code>${operation_id}</code>
+👤 Фойдаланувчи ID: <code>${user_id}</code>
+🏢 Провайдер ID: <code>${provider_id}</code>
 🏢 Провайдер номи: ${provider_name}
 💸 Сумма: ${amount.toLocaleString('ru-RU')} сўм
 📝 Изоҳ: ${desc || '-'}
@@ -110,6 +109,7 @@ function generateProviderMessage(data: {
 🕒 Вақт: ${formatDateToYYYYMMDDHHmm(date)}
 `
 }
+
 
 export const sendTelegramMessage = async (
     chat_id: string | number,
