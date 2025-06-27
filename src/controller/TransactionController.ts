@@ -540,7 +540,7 @@ export const accepting_transaction = async (req: AuthenticatedRequest, res: Resp
             throw RestException.badRequest("Type is invalid. Only ('success_pay', 'reject') allowed");
         }
 
-        if (transaction.status !== "i_payed" && transaction.status !== "pending") throw RestException.notFound("Status is invalid. Only ('success_pay', 'reject') allowed");
+        if (transaction.status !== "i_payed" && transaction.status !== "pending") throw RestException.notFound("Bu to'lovni qayta o'zgartira olmaysiz");
 
         if (transaction.program) {
             if (status === "success_pay") {
