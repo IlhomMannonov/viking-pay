@@ -14,7 +14,6 @@ export async function send_message(type: string, trans: Transaction): Promise<vo
             program: trans.program,
             amount: trans.amount,
             card_number: trans.card_number,
-            user_full_name: trans.user.first_name + " " + trans.user.last_name,
             desc: trans.desc,
             date: trans.card_number
         })
@@ -40,7 +39,6 @@ function generateWalletMessage(data: {
     program: boolean
     amount: number
     card_number: string
-    user_full_name: string
     desc?: string
     date: string
 }): string {
@@ -54,7 +52,6 @@ function generateWalletMessage(data: {
 🔁 ID: ${id}
 💳 Карта: ${card_number}
 👤 Фойдаланувчи ID: ${user_id}
-👤 Фойдаланувчи: ${user_full_name}
 💸 Сумма: ${amount.toLocaleString('ru-RU')} сўм
 👜 Манба: Hamyon
 📝 Изоҳ: ${desc || '-'}

@@ -32,7 +32,7 @@ async function transactionWorker() {
                     id: transaction.card_id,
                     deleted: false,
                     status: "pending_pay"
-                }
+                },
             });
 
             if (!card) {
@@ -75,7 +75,6 @@ async function transactionWorker() {
 
                 card.limit -= realDeposited;
                 await cardRepository.save(card);
-
                 await send_message('info', transaction);
 
             } else {
