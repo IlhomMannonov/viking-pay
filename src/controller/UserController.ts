@@ -13,6 +13,10 @@ import {TelegramMessage} from "../entity/TelegramMessage";
 import {get_user_modules} from "./RolePermissionController";
 import {exceptions} from "winston";
 import axios from "axios";
+import {stubFalse} from "lodash";
+import {exists} from "node:fs";
+import bcrypt from "bcrypt";
+import {fail} from "node:assert";
 
 const userRepository = AppDataSource.getRepository(User);
 const cardRepository = AppDataSource.getRepository(Card);
@@ -96,13 +100,13 @@ export const all_users = async (req: AuthenticatedRequest, res: Response, next: 
         // QueryBuilder
         const queryBuilder = userRepository.createQueryBuilder("user")
             .where("user.deleted = false")
-            .andWhere("(user.is_bot_user <> :is_system_user)", { is_system_user })
+            .andWhere("(user.is_bot_user <> :is_system_user)", {is_system_user})
 
         // Search (if q exists)
         if (q) {
             queryBuilder.andWhere(
                 `(CAST(user.id AS TEXT) ILIKE :q OR user.phone_number ILIKE :q OR user.first_name ILIKE :q OR user.last_name ILIKE :q)`,
-                { q: `%${q}%` }
+                {q: `%${q}%`}
             )
         }
 
@@ -332,14 +336,69 @@ export const send_ask_phone = async (req: AuthenticatedRequest, res: Response, n
 }
 
 
+//ADMIN CREATE USER
+export const create_user = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+    try {
+        const {first_name, last_name, username, password, role_id} = req.body;
+        validFields(['first_name', 'last_name', 'username', 'password'], req.body)
+
+        const exists_user = await userRepository.exists({
+            where: {
+                phone_number: username,
+                deleted: false,
+                is_bot_user: false
+            }
+        })
+        if (exists_user) throw RestException.notFound("User already exists")
+
+        const hashedPassword = await bcrypt.hash(String(password), 10);
+
+        const saved_user = await userRepository.save({
+            first_name: first_name,
+            last_name: last_name,
+            phone_number: username,
+            username: username,
+            password: hashedPassword,
+            role_id: role_id,
+            is_bot_user: false
+        })
+        res.status(200).send({success: true, message: 'User saved successfully', data: saved_user})
+    } catch (err) {
+        next(err)
+    }
+}
+
+export const update_user = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+    try {
+        const {id} = req.params
+        const {first_name, last_name, role_id, password} = req.body
+
+        const user = await userRepository.findOne({where: {id: Number(id), deleted: false, is_bot_user: false}})
+        if (!user) throw RestException.notFound("User not found")
+        const hashedPassword = await bcrypt.hash(String(password), 10);
+
+        user.first_name = first_name ?? user.first_name
+        user.last_name = last_name ?? user.last_name
+        user.role_id = role_id ?? user.role_id
+        user.password = hashedPassword ?? user.password
+
+        await userRepository.save(user)
+
+        res.status(200).send({success: true, message: 'User updated successfully', data: user})
+    } catch (err) {
+        next(err)
+    }
+}
+
+
 export const delete_user = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     try {
         const user_id = req.params.id;
-        const user = await userRepository.findOne({where: {id: Number(user_id)}})
+        const user = await userRepository.findOne({where: {id: Number(user_id), deleted: false, is_bot_user: false}})
         if (!user) throw RestException.notFound(__('user.not_found'));
         user.deleted = true
         await userRepository.save(user)
-res.status(200).send({"OK": true})
+        res.status(200).send({"OK": true})
     } catch (error) {
         next(error
         )

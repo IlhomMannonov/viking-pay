@@ -1,7 +1,6 @@
 import winston from 'winston'
 import DailyRotateFile from 'winston-daily-rotate-file'
 
-// Logger konfiguratsiyasi
 const logger = winston.createLogger({
     level: 'info',
     format: winston.format.combine(
@@ -14,13 +13,23 @@ const logger = winston.createLogger({
         new winston.transports.Console(),
 
         new DailyRotateFile({
-            dirname: '../logs',              // Log papkasi
-            filename: 'app-%DATE%.log',        // Har kunlik fayl nomi
-            datePattern: 'YYYY-MM-DD',         // Sana formati
-            zippedArchive: false,              // Gz qilish kerakmi — optional
-            maxSize: '10m',                    // Har bir fayl maksimal o‘lchami
-            maxFiles: '7d',                    // Oxirgi 7 kunni saqlaydi
-            level: 'info'                      // Log darajasi
+            dirname: '/app/logs',
+            filename: 'app-%DATE%.log',
+            datePattern: 'YYYY-MM-DD',
+            zippedArchive: false,
+            maxSize: '10m',
+            maxFiles: '7d',
+            level: 'info'
+        }),
+
+        new DailyRotateFile({
+            dirname: '/app/logs',
+            filename: 'error-%DATE%.log',
+            datePattern: 'YYYY-MM-DD',
+            zippedArchive: false,
+            maxSize: '10m',
+            maxFiles: '14d',
+            level: 'error'
         })
     ]
 })

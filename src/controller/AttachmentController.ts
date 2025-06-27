@@ -44,7 +44,7 @@ export const uploadFile = async (req: Request, res: Response, next: NextFunction
                     original_name: file.originalname,
                     file_name: file.filename,
                     file_size: file.size,
-                    href: `/viking_files/${file.filename}`,
+                    href: `/app/uploads/${file.filename}`,
                     file_type: getFileExtension(file.filename),
                 });
                 const savedAttachment = await attachmentRepository.save(attachment);
@@ -123,7 +123,7 @@ export const getFileById = async (req: Request, res: Response, next: NextFunctio
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        const uploadPath = '/root/viking_files'; // Fayllar saqlanadigan papkani ko'rsatish
+        const uploadPath = '/app/uploads'; // Fayllar saqlanadigan papkani ko'rsatish
 
         // Papka mavjudligini tekshirish va kerak bo'lsa yaratish
         if (!fs.existsSync(uploadPath)) {

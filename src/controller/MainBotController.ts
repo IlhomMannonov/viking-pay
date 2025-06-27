@@ -8,19 +8,8 @@ const bot = new Telegraf('7958191913:AAFzyiOb4Xo9J9D1S2_X76WgECtbrfRWJjI');
 const userRepository = AppDataSource.getRepository(User);
 
 bot.start(async (ctx) => {
-    const user = await getBotUser(ctx.chat.id.toString());
-    if (!user.first_name) {
-        await ctx.reply(
-            'Пожалуйста, отправьте свой номер телефона.',
-            Markup.keyboard([
-                Markup.button.contactRequest("📞 Отправить номер телефона")
-            ])
-                .resize()
-        );
-    }else{
         await userHome(ctx)
 
-    }
 
 });
 
@@ -101,13 +90,12 @@ export const userHome = async (ctx: Context) => {
         Markup.inlineKeyboard([
             [Markup.button.url("🆘 Начать", "https://t.me/VikingPaybot?startapp=start")]
         ])
-
     );
 
     // await ctx.reply("👆 Bu to'lov tizimlari orqali to'lov qilishingiz uchun avval to'lov accountlarinigzni faollashtiring", Markup.removeKeyboard())
 };
 export const getBotUser = async (chat_id: string): Promise<User> => {
-    const findUser = await userRepository.findOne({where: {chat_id, deleted: false}});
+    const findUser = await userRepository.findOne({where: {chat_id, deleted: false, is_bot_user:true}, order: {id: "desc"}});
     if (!findUser) {
         const newUser = userRepository.create({
             chat_id,

@@ -9,7 +9,7 @@ const sliderRepository = AppDataSource.getRepository(Slider);
 export const create = async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> => {
     try {
         const {link, photo_id, order_index} = req.body;
-        validFields(['link', 'photo_id'], req.body);
+        validFields( ['photo_id'], req.body);
         const last_slide = await sliderRepository.findOne({
             where: {},
             order: { order_index: 'desc' }
