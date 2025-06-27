@@ -13,7 +13,7 @@ import {Module} from "../entity/Module";
 import {seedInitialData, seedPermissions, seedStaticOptions} from "../seed/InitialData";
 import {Slider} from "../entity/Slider";
 import {StaticOptions} from "../entity/StaticOptions";
-import {TelegramIntegration} from "../entity/ChanelIntegration";
+import {ChanelIntegration} from "../entity/ChanelIntegration";
 
 export const AppDataSource = new DataSource({
     type: 'postgres',
@@ -35,7 +35,7 @@ export const AppDataSource = new DataSource({
         Module,
         Slider,
         StaticOptions,
-        TelegramIntegration
+        ChanelIntegration
     ],
     synchronize: true,
 });
