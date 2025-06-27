@@ -548,10 +548,6 @@ export const accepting_transaction = async (req: AuthenticatedRequest, res: Resp
             if (status === "success_pay") {
                 await addUserBalance(transaction.user_id, transaction);
             }
-        } else {
-            if (status === "reject") {
-                await removeUserBalanceAmount(transaction.user_id, transaction, transaction.amount)
-            }
         }
         transaction.status = status;
 
