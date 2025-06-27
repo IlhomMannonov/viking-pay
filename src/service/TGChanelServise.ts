@@ -42,7 +42,7 @@ function generateWalletMessage(data: {
     desc?: string
     date: string
 }): string {
-    const {id, user_id, program, amount, card_number, user_full_name, desc, date} = data
+    const {id, user_id, program, amount, card_number, desc, date} = data
 
     const emoji = program ? '📥' : '📤'
     const title = program ? 'КИРИМ ТУШДИ (wallet)' : 'ЧИҚИМ БЎЛДИ (wallet)'
