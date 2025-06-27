@@ -84,6 +84,7 @@ export const seedInitialData = async (dataSource: DataSource) => {
                 { name: "Статические параметры", order_index: 1, route: "static-options",unique_key:"static-options" },
                 { name: "Слайдер", order_index: 2, route: "slider",unique_key:"slider" },
                 { name: "Системные журналы", order_index: 2, route: "logs",unique_key:"logs" },
+                { name: "Transaction chanel Integration", order_index: 4, route: "transaction-chanel-integration",unique_key:"transaction-chanel-integration" },
             ],
         },
         {
@@ -162,6 +163,11 @@ export const seedPermissions = async (dataSource: DataSource) => {
         { name: "delete-slider", desc: "Слайдерни ўчириш", module_key: "slider" },
 
         { name: "see_logs", desc: "Логларни коърыш ", module_key: "logs" },
+
+        { name: "add-transaction-chanel", desc: "Транзаксиялар каналини қўшиш", module_key: "transaction-chanel-integration" },
+        { name: "delete-transaction-chanel", desc: "Транзаксиялар каналини ўчириш", module_key: "transaction-chanel-integration" },
+        { name: "update-transaction-chanel", desc: "Транзаксиялар каналини Тахрирлаш", module_key: "transaction-chanel-integration" },
+
     ]
 
 

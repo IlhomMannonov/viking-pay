@@ -10,9 +10,10 @@ import {TelegramMessage} from "../entity/TelegramMessage";
 import {Role} from "../entity/Role";
 import {Permission} from "../entity/Permission";
 import {Module} from "../entity/Module";
-import {seedInitialData, seedPermissions,seedStaticOptions} from "../seed/InitialData";
+import {seedInitialData, seedPermissions, seedStaticOptions} from "../seed/InitialData";
 import {Slider} from "../entity/Slider";
 import {StaticOptions} from "../entity/StaticOptions";
+import {TelegramIntegration} from "../entity/ChanelIntegration";
 
 export const AppDataSource = new DataSource({
     type: 'postgres',
@@ -33,7 +34,8 @@ export const AppDataSource = new DataSource({
         Permission,
         Module,
         Slider,
-        StaticOptions
+        StaticOptions,
+        TelegramIntegration
     ],
     synchronize: true,
 });

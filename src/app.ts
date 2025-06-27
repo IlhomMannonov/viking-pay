@@ -22,6 +22,7 @@ import sliderRouter from "./routers/SliderRouter";
 import statisticsRouter from "./routers/StatisticsRouter";
 import staticOptionsRouter from "./routers/StaticOptionsRouter";
 import logsRouter from "./routers/LogsRouter";
+import chanelIntegrationRouter from "./routers/ChanelIntegrationRouter";
 
 
 const app: Application = express();
@@ -49,6 +50,8 @@ app.use('/api/v1/slider', sliderRouter);
 app.use('/api/v1/statics', statisticsRouter);
 app.use('/api/v1/static-options', staticOptionsRouter);
 app.use('/api/v1/logs', logsRouter);
+app.use('/api/v1/chanel-integration', chanelIntegrationRouter);
+
 
 
 app.use(errorHandler);
