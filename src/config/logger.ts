@@ -13,7 +13,7 @@ const logger = winston.createLogger({
         new winston.transports.Console(),
 
         new DailyRotateFile({
-            dirname: '../logs',
+            dirname: '/app/logs',
             filename: 'app-%DATE%.log',
             datePattern: 'YYYY-MM-DD',
             zippedArchive: false,
@@ -23,7 +23,7 @@ const logger = winston.createLogger({
         }),
 
         new DailyRotateFile({
-            dirname: '../logs',
+            dirname: '/app/logs',
             filename: 'error-%DATE%.log',
             datePattern: 'YYYY-MM-DD',
             zippedArchive: false,
