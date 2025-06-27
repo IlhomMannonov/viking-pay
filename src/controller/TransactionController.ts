@@ -517,6 +517,8 @@ export const deposit_withdraw_manual = async (req: AuthenticatedRequest, res: Re
             }
             await manager.save(user);
             await manager.save(transaction);
+
+            send_message('info',transaction)
         });
 
         res.status(201).send({message: `Deposit manual: ${amount}`, success: true});
