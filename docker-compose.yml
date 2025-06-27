@@ -5,7 +5,7 @@ services:
     build: .
     container_name: viking-node-app
     ports:
-      - "18080:8080"
+      - "19990:9990"
     environment:
       - NODE_ENV=production
       - DB_HOST=postgres-database
@@ -23,3 +23,6 @@ services:
 networks:
   shared-net:
     external: true
+
+
+
