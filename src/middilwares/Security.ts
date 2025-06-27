@@ -55,7 +55,8 @@ export const verifyJwtToken = (permission: string | null = null) => {
         }
 
         const user = await userRepository.findOne({where: {id: decodedToken.id, deleted: false}});
-        if (!user) return res.status(403).json({message: "User not found"});
+        if (!user) return res.status(403).json({message: "Token yaroqsiz"});
+
         user.last_login_time = new Date();
         req.user = user;
 
