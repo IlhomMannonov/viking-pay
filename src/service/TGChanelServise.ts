@@ -111,20 +111,37 @@ function generateProviderMessage(data: {
 `
 }
 
-export const sendTelegramMessage = async (chat_id: string | number, text: string): Promise<void> => {
+export const sendTelegramMessage = async (
+    chat_id: string | number,
+    text: string
+): Promise<void> => {
     const bot_token = process.env.BOT_TOKEN
     if (!bot_token) throw new Error('BOT_TOKEN not found in environment variables')
 
     try {
         const url = `https://api.telegram.org/bot${bot_token}/sendMessage`
-        await axios.post(url, {
+
+        const payload: any = {
             chat_id,
             text,
-            parse_mode: 'HTML', // yoki 'Markdown' agar kerak bo‘lsa
+            parse_mode: 'HTML',
             disable_web_page_preview: true
-        })
+        }
+
+        payload.reply_markup = {
+            inline_keyboard: [
+                [
+                    {
+                        text: "🧾Подробнее",
+                        url: "https://google.com"
+                    }
+                ]
+            ]
+        }
+
+
+        await axios.post(url, payload)
     } catch (err) {
         console.error('Telegram xabar yuborishda xatolik:')
-        throw new Error('Telegram xabar yuborilmadi')
     }
 }
