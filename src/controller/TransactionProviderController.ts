@@ -10,6 +10,7 @@ import logger from "../config/logger";
 import {User} from "../entity/User";
 import {Transaction} from "../entity/Transaction";
 import {MoreThan} from "typeorm";
+import {send_message} from "../service/TGChanelServise";
 
 const providerRepository = AppDataSource.getRepository(Provider);
 const userRepository = AppDataSource.getRepository(User);
@@ -120,8 +121,13 @@ export const deposit = async (req: AuthenticatedRequest, res: Response, next: Ne
             });
 
             createdTransaction = await manager.save(tr);
+
+
         });
         logger.info(`${user.id} Foydalanuvchi ${provider.name} - ${player.Name} O'yinchi hisobini ${amount} ga to'ldirdi`);
+
+        if (createdTransaction)
+            await send_message('info', createdTransaction)
 
         res.status(200).send({
             success: true,
@@ -142,13 +148,13 @@ export const withdraw = async (req: AuthenticatedRequest, res: Response, next: N
             throw RestException.badRequest(__('user.no_user_in_header'));
         }
 
-        const { provider_id, code, id } = req.body;
+        const {provider_id, code, id} = req.body;
         validFields(['provider_id', 'code', 'id'], req.body);
 
         logger.info(`Withdraw request: user_id=${user.id}, provider_id=${provider_id}, code=${code}, player_id=${id}`);
 
         // ✅ PROVIDER CHECK
-        const provider = await providerRepository.findOne({ where: { id: provider_id, deleted: false } });
+        const provider = await providerRepository.findOne({where: {id: provider_id, deleted: false}});
         if (!provider) {
             logger.warn(`Provider not found: id=${provider_id}`);
             throw RestException.badRequest(__('provider.not_found'));
@@ -182,7 +188,7 @@ export const withdraw = async (req: AuthenticatedRequest, res: Response, next: N
             await AppDataSource.transaction(async (manager) => {
                 const tr = transactionRepository.create({
                     amount,
-                    soft_amount:amount,
+                    soft_amount: amount,
                     user_id: user.id,
                     provider_id: provider.id,
                     type: "provider",
@@ -221,7 +227,6 @@ export const withdraw = async (req: AuthenticatedRequest, res: Response, next: N
         next(err);
     }
 };
-
 
 
 const getRemainingTime = (createdAt: Date, limitMs = 5 * 60 * 1000) => {
