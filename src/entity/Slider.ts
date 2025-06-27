@@ -5,7 +5,7 @@ import {User} from "./User";
 @Entity('slider')
 export class Slider extends BaseEntityFull {
 
-    @Column({type: 'text', nullable: false})
+    @Column({type: 'text', nullable: true})
     link!: string;
 
     @Column({type: 'bigint', nullable: false})
