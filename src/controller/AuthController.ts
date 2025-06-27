@@ -24,9 +24,8 @@ export const register = async (req: Request, res: Response, next: NextFunction):
         }
 
 
-
         // Foydalanuvchi mavjudligini tekshirish
-        const existsUser = await userRepository.exists({where: {phone_number: phone, deleted:false}});
+        const existsUser = await userRepository.exists({where: {phone_number: phone, deleted: false}});
 
         if (existsUser) {
             res.status(400).json({message: "Foydalanuvchi allaqachon mavjud"});
@@ -59,7 +58,7 @@ export const login = async (req: Request, res: Response, next: NextFunction): Pr
         validFields(["password", "username"], req.body);
 
         // 2. Foydalanuvchini topish
-        const user = await userRepository.findOne({where: {phone_number: username, deleted:false}});
+        const user = await userRepository.findOne({where: {phone_number: username, deleted: false}});
         if (!user) {
             res.status(401).json({message: "Foydalanuvchi yoki parol noto‘g‘ri!", success: false});
             return;
@@ -110,13 +109,13 @@ export const login_tg = async (req: Request, res: Response, next: NextFunction):
         const {id, first_name, last_name, username, photo_url} = req.body;
         validFields(['id', 'first_name', 'photo_url'], req.body);
 
-        let user = await userRepository.findOne({where: {chat_id: id,deleted:false}});
+        let user = await userRepository.findOne({where: {chat_id: id, deleted: false, is_bot_user: true}});
         if (!user) {
             user = await userRepository.save({
                 chat_id: id,
                 first_name: first_name,
                 last_name: last_name,
-                is_bot_user:true
+                is_bot_user: true
             })
         }
         if (user.first_name !== first_name)
@@ -129,7 +128,7 @@ export const login_tg = async (req: Request, res: Response, next: NextFunction):
             user.logo_id = photo_url;
         }
 
-       await userRepository.save(user)
+        await userRepository.save(user)
         if (!JWT_SECRET) {
             res.status(500).json({message: "Serverda muammo bor. Iltimos, keyinroq urinib ko‘ring.", success: false});
             return;
