@@ -529,8 +529,8 @@ export const deposit_withdraw_manual = async (req: AuthenticatedRequest, res: Re
 // FUNKSIYA FAQAT HOMYONGA KIRIM CHIQIM TRANZAKSIYASINI TAMINLAYDI
 export const accepting_transaction = async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> => {
     try {
-        const {transaction_id, description, status} = req.body;
-        validFields(['transaction_id', 'description', 'type', 'status'], req.body);
+            const {transaction_id, description, status} = req.body;
+        validFields(['transaction_id', 'status'], req.body);
 
         const transaction = await transactionRepository.findOneBy({id: transaction_id, deleted: false, type: "wallet"});
         if (!transaction) throw RestException.notFound(__('transaction.not_found'));
@@ -551,7 +551,7 @@ export const accepting_transaction = async (req: AuthenticatedRequest, res: Resp
                 await removeUserBalanceAmount(transaction.user_id, transaction, transaction.amount)
             }
         }
-        transaction.status = 'success_pay';
+        transaction.status = status;
         transaction.desc = description;
         await transactionRepository.save(transaction);
 
