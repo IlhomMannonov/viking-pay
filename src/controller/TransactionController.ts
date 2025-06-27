@@ -553,6 +553,7 @@ export const accepting_transaction = async (req: AuthenticatedRequest, res: Resp
 
         await transactionRepository.save(transaction);
 
+        send_message('info',transaction)
         res.status(200).json({success: true, data: transaction, message: "Status updated successfully."});
 
     } catch (err) {
