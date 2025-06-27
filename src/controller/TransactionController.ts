@@ -551,7 +551,7 @@ export const accepting_transaction = async (req: AuthenticatedRequest, res: Resp
                 await removeUserBalanceAmount(transaction.user_id, transaction, transaction.amount)
             }
         }
-        transaction.status = status;
+        transaction.status = 'success_pay';
         transaction.desc = description;
         await transactionRepository.save(transaction);
 
