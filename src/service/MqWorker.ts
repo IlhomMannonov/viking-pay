@@ -6,7 +6,8 @@ import {get_tg_cards, getCardInfoByNumber} from "../controller/TelegramAccountCo
 import {addUserBalanceAmount} from "../controller/TransactionController";
 import {Transaction} from "../entity/Transaction";
 import axios from "axios";
-import {TelegramMessage} from "../entity/TelegramMessage"; // Bazaga ulanish funksiyasini import qilish
+import {TelegramMessage} from "../entity/TelegramMessage";
+import {send_message} from "./TGChanelServise"; // Bazaga ulanish funksiyasini import qilish
 
 const user = process.env.MQ_USER;
 const pass = process.env.MQ_PASS;
@@ -74,6 +75,9 @@ async function transactionWorker() {
 
                 card.limit -= realDeposited;
                 await cardRepository.save(card);
+
+                await send_message('info', transaction);
+
             } else {
                 transaction.status = 'reject';
                 logger.info("❌ Pul tushmagan.");

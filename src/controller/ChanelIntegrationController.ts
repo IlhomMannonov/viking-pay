@@ -10,11 +10,11 @@ const chanelIntegrationRepository = AppDataSource.getRepository(ChanelIntegratio
 
 export const add_chanel = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-        const {chanel_id, type} = req.body;
+        const {chanel_id, type, responsible_chat_ids} = req.body;
 
         validFields(['chanel_id', 'type'], req.body)
 
-        if (type !== 'action' || type !== 'info') throw RestException.badRequest("Type faqat action, info bo'la oladi")
+        if (type !== 'action' && type !== 'info') throw RestException.badRequest("Type faqat action, info bo'la oladi")
 
         const bot_token = process.env.BOT_TOKEN;
 
@@ -24,8 +24,9 @@ export const add_chanel = async (req: Request, res: Response, next: NextFunction
         const saved_data = await chanelIntegrationRepository.save({
             chanel_id: chanel_id,
             chanel_token: bot_token,
-            chanel_info: chanel_info.title,
-            type: type
+            chanel_name: chanel_info,
+            type: type,
+            responsible_chat_ids: responsible_chat_ids
         })
 
         res.status(200).send({success: true, data: saved_data});
@@ -35,6 +36,58 @@ export const add_chanel = async (req: Request, res: Response, next: NextFunction
     }
 }
 
+export const all = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+        const chanels = await chanelIntegrationRepository.find({order: {chanel_id: "desc"}});
+        res.status(200).send({success: true, data: chanels});
+    } catch (err) {
+        next(err)
+    }
+}
+export const update_chanel = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+        const {chanel_id, type, responsible_chat_ids} = req.body
+
+        validFields(['chanel_id'], req.body)
+
+        const exists = await chanelIntegrationRepository.findOneBy({chanel_id})
+        if (!exists) throw RestException.notFound("Kanal topilmadi")
+
+        if (type && !['action', 'info'].includes(type)) {
+            throw RestException.badRequest("Type faqat 'action' yoki 'info' bo‘la oladi")
+        }
+
+        // Yangi kanal nomini olish (agar chanel_id o'zgarmasa, bu majburiy emas)
+        const chanel_info = await getChannelTitle(chanel_id)
+
+        await chanelIntegrationRepository.update({chanel_id}, {
+            chanel_name: chanel_info,
+            type: type || exists.type,
+            responsible_chat_ids: responsible_chat_ids || exists.responsible_chat_ids
+        })
+
+        const updated = await chanelIntegrationRepository.findOneBy({chanel_id})
+
+        res.status(200).send({success: true, data: updated})
+    } catch (err) {
+        next(err)
+    }
+}
+
+export const delete_chanel = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+        const {chanel_id} = req.params
+
+        const exists = await chanelIntegrationRepository.findOneBy({chanel_id})
+        if (!exists) throw RestException.notFound("Kanal topilmadi")
+
+        await chanelIntegrationRepository.delete({chanel_id})
+
+        res.status(200).send({success: true, message: "Kanal muvaffaqiyatli o‘chirildi"})
+    } catch (err) {
+        next(err)
+    }
+}
 
 async function isBotAdminInChannel(channelUsername: string): Promise<boolean> {
     try {
@@ -43,8 +96,8 @@ async function isBotAdminInChannel(channelUsername: string): Promise<boolean> {
 
         const url = `https://api.telegram.org/bot${bot_token}/getChatAdministrators?chat_id=${channelUsername}`
         const response = await axios.get(url)
-
         const admins = response.data.result
+
         return admins.some(
             (admin: any) => admin.user.username?.toLowerCase() === botusername?.toLowerCase()
         )

@@ -12,7 +12,8 @@ import {Not} from "typeorm";
 import {User} from "../entity/User";
 import {RabbitMQService} from "../service/MQServise";
 import {groupBy} from 'lodash';
-import {StaticOptions} from "../entity/StaticOptions"; // kerak bo‘lsa o‘rnat: npm i lodash
+import {StaticOptions} from "../entity/StaticOptions";
+import {send_message} from "../service/TGChanelServise"; // kerak bo‘lsa o‘rnat: npm i lodash
 
 
 const transactionRepository = AppDataSource.getRepository(Transaction);
@@ -364,6 +365,7 @@ export const withdraw_balance = async (req: AuthenticatedRequest, res: Response,
             await manager.save(transaction);
         });
 
+        await send_message('info', transaction);
         res.status(200).json({
             success: true,
             data: transaction

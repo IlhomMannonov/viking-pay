@@ -2,7 +2,7 @@ import {Column, Entity, PrimaryColumn} from 'typeorm';
 import {BaseEntityFull} from "./template/BaseEntityFull";
 
 @Entity('chanel_integration')
-export class ChanelIntegration extends BaseEntityFull {
+export class ChanelIntegration {
 
     @PrimaryColumn({type: 'text'})
     chanel_id!: string;

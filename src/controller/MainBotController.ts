@@ -4,7 +4,7 @@ import {AppDataSource} from "../config/db";
 import {User} from "../entity/User";
 import {Context} from "node:vm";
 
-const bot = new Telegraf('7958191913:AAFzyiOb4Xo9J9D1S2_X76WgECtbrfRWJjI');
+    const bot = new Telegraf('7958191913:AAFzyiOb4Xo9J9D1S2_X76WgECtbrfRWJjI');
 const userRepository = AppDataSource.getRepository(User);
 
 bot.start(async (ctx) => {
@@ -121,7 +121,7 @@ export const setWebhook = (req: Request, res: Response) => {
 };
 
 
-bot.launch();
+// bot.launch();
 export const launchBot = () => {
     console.log('Telegram bot started');
 };

@@ -166,6 +166,7 @@ export const seedPermissions = async (dataSource: DataSource) => {
         { name: "add-transaction-chanel", desc: "Транзаксиялар каналини қўшиш", module_key: "transaction-chanel-integration" },
         { name: "delete-transaction-chanel", desc: "Транзаксиялар каналини ўчириш", module_key: "transaction-chanel-integration" },
         { name: "update-transaction-chanel", desc: "Транзаксиялар каналини Тахрирлаш", module_key: "transaction-chanel-integration" },
+        { name: "see-transaction-chanel", desc: "Транзаксиялар каналларини кўриш", module_key: "transaction-chanel-integration" },
 
 
         { name: "create-staff-user", desc: "Ҳодим яратиш", module_key: "staff-users" },
