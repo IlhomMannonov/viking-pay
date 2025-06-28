@@ -11,12 +11,9 @@ import {Attachment} from "../entity/Attachment";
 import {RabbitMQService} from "../service/MQServise";
 import {TelegramMessage} from "../entity/TelegramMessage";
 import {get_user_modules} from "./RolePermissionController";
-import {exceptions} from "winston";
 import axios from "axios";
-import {stubFalse} from "lodash";
-import {exists} from "node:fs";
 import bcrypt from "bcrypt";
-import {fail} from "node:assert";
+import {Module} from "../entity/Module";
 
 const userRepository = AppDataSource.getRepository(User);
 const cardRepository = AppDataSource.getRepository(Card);
@@ -32,7 +29,23 @@ export const me = async (req: AuthenticatedRequest, res: Response, next: NextFun
         req.user.password = null
 
         if (req.user.role_id) {
-            req.user.modules = await get_user_modules(req.user.role_id);
+            function filterModules(modules: Module[]): Module[] {
+                return modules
+                    .map((module) => {
+                        const filteredSubmodules = module.submodules.filter((sub) => sub.check)
+
+                        if (module.check || filteredSubmodules.length > 0) {
+                            return {
+                                ...module,
+                                submodules: filteredSubmodules
+                            }
+                        }
+
+                        return null
+                    })
+                    .filter((module): module is Module => module !== null)
+            }
+
         }
         res.status(200).send({
             success: true, data: {
