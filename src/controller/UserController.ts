@@ -29,7 +29,7 @@ export const me = async (req: AuthenticatedRequest, res: Response, next: NextFun
         req.user.password = null
 
         if (req.user.role_id) {
-            function filterModules(modules: Module[]): Module[] {
+            req.user.modules = function filterModules(modules: Module[]): Module[] {
                 return modules
                     .map((module) => {
                         const filteredSubmodules = module.submodules.filter((sub) => sub.check)
