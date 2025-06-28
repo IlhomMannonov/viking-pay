@@ -371,7 +371,7 @@ export const create_user = async (req: AuthenticatedRequest, res: Response, next
 export const update_user = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     try {
         const {id} = req.params
-        const {first_name, last_name, role_id, password} = req.body
+        const {first_name, last_name, role_id, password, username} = req.body
 
         const user = await userRepository.findOne({where: {id: Number(id), deleted: false, is_bot_user: false}})
         if (!user) throw RestException.notFound("User not found")
@@ -381,6 +381,7 @@ export const update_user = async (req: AuthenticatedRequest, res: Response, next
         user.last_name = last_name ?? user.last_name
         user.role_id = role_id ?? user.role_id
         user.password = hashedPassword ?? user.password
+        user.phone_number = username ?? user.phone_number
 
         await userRepository.save(user)
 

@@ -44,18 +44,18 @@ export const verifyJwtToken = (permission: string | null = null) => {
         const token = req.headers['authorization'];
 
         if (!token) {
-            return res.status(403).json({message: "Token taqdim etilmagan."});
+            return res.status(401).json({message: "Token taqdim etilmagan."});
         }
 
         const actualToken = token.startsWith('Bearer ') ? token.slice(7) : token;
 
         const decodedToken = decodeJwtToken(actualToken) as IUser | null;
         if (!decodedToken) {
-            return res.status(403).json({message: "Token yaroqsiz"});
+            return res.status(401).json({message: "Token yaroqsiz"});
         }
 
         const user = await userRepository.findOne({where: {id: decodedToken.id, deleted: false}});
-        if (!user) return res.status(403).json({message: "Token yaroqsiz"});
+        if (!user) return res.status(401).json({message: "Token yaroqsiz"});
 
         user.last_login_time = new Date();
         req.user = user;
