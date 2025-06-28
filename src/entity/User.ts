@@ -19,6 +19,9 @@ export class User extends BaseEntityFull {
     patron!: string;
 
     @Column({type: 'varchar', length: 255, nullable: true})
+    username!: string;
+
+    @Column({type: 'varchar', length: 255, nullable: true})
     password!: string;
 
     @Column({type: 'timestamp', nullable: true})

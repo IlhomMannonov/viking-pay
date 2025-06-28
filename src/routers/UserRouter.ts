@@ -46,6 +46,6 @@ router.route("/create-user")
 
 
 router.route("/update-user/:id")
-    .post(verifyJwtToken('create-staff-user'), update_user);
+    .put(verifyJwtToken('create-staff-user'), update_user);
 
 export default router;
