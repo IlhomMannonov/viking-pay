@@ -13,7 +13,6 @@ import {TelegramMessage} from "../entity/TelegramMessage";
 import {get_user_modules} from "./RolePermissionController";
 import axios from "axios";
 import bcrypt from "bcrypt";
-import {Module} from "../entity/Module";
 
 const userRepository = AppDataSource.getRepository(User);
 const cardRepository = AppDataSource.getRepository(Card);
@@ -29,23 +28,27 @@ export const me = async (req: AuthenticatedRequest, res: Response, next: NextFun
         req.user.password = null
 
         if (req.user.role_id) {
-            req.user.modules = function filterModules(modules: Module[]): Module[] {
-                return modules
-                    .map((module) => {
-                        const filteredSubmodules = module.submodules.filter((sub) => sub.check)
+            const modules = await get_user_modules(req.user.role_id)
 
-                        if (module.check || filteredSubmodules.length > 0) {
-                            return {
-                                ...module,
-                                submodules: filteredSubmodules
-                            }
+
+             // faqat null bo‘lmaganlarni qoldiramiz
+            req.user.modules = modules
+                .map(module => {
+                    // check: true bo‘lgan submodullarni olib qolamiz
+                    const submodules = module.submodules?.filter(sub => sub.check) || []
+
+                    // agar modulning o‘zi yoki submodules ichida check: true bo‘lsa, uni qoldiramiz
+                    if (module.check || submodules.length > 0) {
+                        return {
+                            ...module,
+                            submodules
                         }
+                    }
 
-                        return null
-                    })
-                    .filter((module): module is Module => module !== null)
-            }
-
+                    // aks holda null qaytaramiz
+                    return null
+                })
+                .filter((m): m is typeof modules[number] => m !== null)
         }
         res.status(200).send({
             success: true, data: {
