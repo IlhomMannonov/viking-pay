@@ -46,6 +46,7 @@ bot.on('contact', async (ctx) => {
 
 
 bot.on("text", async (ctx) => {
+    console.log(ctx)
     const user = await getBotUser(ctx.chat.id.toString());
     if (user.state === 'send_FIO') {
         const text = ctx.message.text.trim();
@@ -128,34 +129,53 @@ export const setWebhook = (req: Request, res: Response) => {
 
 
 bot.on('callback_query', async (ctx: any) => {
-    const data = ctx.callbackQuery.data;
+    const data = ctx.callbackQuery.data
     const id = data.split(':')[1]
-    if (data.startsWith('ok:') || data.startsWith('no:')) {
 
+    if (data.startsWith('ok:') || data.startsWith('no:')) {
         const status = data.split(':')[0]
-        const trans = await handleTransactionStatusChange(id, status === 'ok' ? 'success_pay' : "reject")
-        if (trans) {
-            const txt = generateWalletPendingMessage({
-                program: trans.program,
-                amount: trans.amount,
-                user_id: trans.user_id,
-                card_number: trans.card_number,
-                desc: trans.desc,
-                status: trans.status,
-            })
-            await ctx.editMessageText(txt, {
-                parse_mode: 'HTML',
-                reply_markup: Markup.inlineKeyboard([
-                    [
-                        Markup.button.url("🧾Подробнее", "https://google.com")
-                    ]
+
+        try {
+            const trans = await handleTransactionStatusChange(
+                id,
+                status === 'ok' ? 'success_pay' : 'reject'
+            )
+
+            if (trans) {
+                const txt = generateWalletPendingMessage({
+                    program: trans.program,
+                    amount: trans.amount,
+                    user_id: trans.user_id,
+                    card_number: trans.card_number,
+                    desc: trans.desc,
+                    status: trans.status
+                })
+
+                await ctx.editMessageText(txt, {
+                    parse_mode: 'HTML',
+                    reply_markup: Markup.inlineKeyboard([
+                        [Markup.button.url('🧾Подробнее', 'https://google.com')]
+                    ]).reply_markup
+                })
+            }
+        } catch (err: any) {
+            // ❗️ xatoni answerCbQuery orqali foydalanuvchiga yuborish
+            const message =
+                err?.message || '❌ Nomaʼlum xatolik yuz berdi'
+
+            await ctx.answerCbQuery(message, {show_alert: true})
+
+            await ctx.editMessageReplyMarkup(
+                Markup.inlineKeyboard([
+                    [Markup.button.url('🧾Подробнее', 'https://google.com')]
                 ]).reply_markup
-            })
+            )
         }
     } else {
         await ctx.answerCbQuery('⚠️ Noma’lum amal')
     }
 })
+
 
 bot.launch();
 export const launchBot = () => {
