@@ -41,12 +41,28 @@ export async function send_message(type: string, trans: Transaction): Promise<vo
             })
         }
         chanels.forEach(chanel => {
-            sendTelegramMessage(chanel.chanel_id, text)
+            sendTelegramMessageInfo(chanel.chanel_id, text)
 
         })
 
     } else if (type == 'action') {
+        const chanels = await chanelIntegrationRepository.find({where: {type: "action"}})
 
+        if (trans.type == 'wallet') {
+            if (!trans.program) {
+                const txt = generateWalletPendingMessage({
+                    program: trans.program,
+                    amount: trans.amount,
+                    user_id: trans.user_id,
+                    card_number: trans.card_number,
+                    desc: trans.desc,
+                    status: trans.status,
+                })
+                chanels.forEach(chanel => {
+                    sendTelegramMessageAction(chanel.chanel_id, txt)
+                })
+            }
+        }
     }
 }
 
@@ -59,7 +75,7 @@ function generateWalletMessage(data: {
     desc?: string
     date: Date
 }): string {
-    const { id, user_id, program, amount, card_number, desc, date } = data
+    const {id, user_id, program, amount, card_number, desc, date} = data
 
     const emoji = program ? '📥' : '📤'
     const title = program ? 'КИРИМ ТУШДИ (wallet)' : 'ЧИҚИМ БЎЛДИ (wallet)'
@@ -89,7 +105,7 @@ function generateProviderMessage(data: {
     desc?: string
     date: Date
 }): string {
-    const { id, program, amount, operation_id, user_id, provider_id, provider_name, desc, date } = data
+    const {id, program, amount, operation_id, user_id, provider_id, provider_name, desc, date} = data
 
     const emoji = program ? '📥' : '📤'
     const title = program
@@ -115,9 +131,10 @@ function generateWalletPendingMessage(data: {
     amount: number
     user_id: number
     card_number: string
-    desc?: string
+    desc?: string,
+    status: string
 }): string {
-    const { program, amount, user_id, card_number, desc } = data
+    const {program, amount, user_id, card_number, desc, status} = data
 
     const emoji = program ? '⏳📥' : '⏳📤'
     const title = program
@@ -130,13 +147,13 @@ function generateWalletPendingMessage(data: {
 💳 Карта рақами: <code>${card_number}</code>
 💸 Сумма: ${amount.toLocaleString('ru-RU')} сўм
 📝 Изоҳ: ${desc || '-'}
+🔻 Status: ${status || '-'}
 
 ⏳ Илтимос, операция якунланишини кутиб туринг...`
 }
 
 
-
-export const sendTelegramMessage = async (
+export const sendTelegramMessageInfo = async (
     chat_id: string | number,
     text: string
 ): Promise<void> => {
@@ -160,6 +177,50 @@ export const sendTelegramMessage = async (
                         text: "🧾Подробнее",
                         url: "https://google.com"
                     }
+                ]
+            ]
+        }
+
+
+        await axios.post(url, payload)
+    } catch (err) {
+        console.error('Telegram xabar yuborishda xatolik:')
+    }
+}
+export const sendTelegramMessageAction = async (
+    chat_id: string | number,
+    text: string
+): Promise<void> => {
+    const bot_token = process.env.BOT_TOKEN
+    if (!bot_token) throw new Error('BOT_TOKEN not found in environment variables')
+
+    try {
+        const url = `https://api.telegram.org/bot${bot_token}/sendMessage`
+
+        const payload: any = {
+            chat_id,
+            text,
+            parse_mode: 'HTML',
+            disable_web_page_preview: true
+        }
+
+        payload.reply_markup = {
+            inline_keyboard: [
+                [
+                    {
+                        text: "🧾Подробнее",
+                        url: "https://google.com"
+                    },
+                ],
+                [
+                    {
+                        text: "✅ Подтверждение",
+                        callback_data: "confirm_action"
+                    },
+                    {
+                        text: "❌ Отмена",
+                        callback_data: "cancel_action"
+                    },
                 ]
             ]
         }

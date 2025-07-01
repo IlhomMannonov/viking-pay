@@ -365,6 +365,7 @@ export const withdraw_balance = async (req: AuthenticatedRequest, res: Response,
             await manager.save(transaction);
         });
 
+        await send_message('action', transaction)
         res.status(200).json({
             success: true,
             data: transaction
