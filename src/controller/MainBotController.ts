@@ -130,11 +130,11 @@ export const setWebhook = (req: Request, res: Response) => {
 bot.on('callback_query', async (ctx: any) => {
     const data = ctx.callbackQuery.data;
     const id = data.split(':')[1]
-    if (data.startsWith('ok:')) {
+    if (data.startsWith('ok:') || data.startsWith('no:')) {
 
-        const trans = await handleTransactionStatusChange(id, 'success_pay')
+        const status = data.split(':')[0]
+        const trans = await handleTransactionStatusChange(id, status === 'ok' ? 'success_pay' : "reject")
         if (trans) {
-            await ctx.answerCbQuery('✅ OK callback')
             const txt = generateWalletPendingMessage({
                 program: trans.program,
                 amount: trans.amount,
@@ -152,9 +152,6 @@ bot.on('callback_query', async (ctx: any) => {
                 ])
             })
         }
-    } else if (data === 'no') {
-        await handleTransactionStatusChange(id, 'reject')
-        await ctx.answerCbQuery('❌ Bekor qilindi')
     } else {
         await ctx.answerCbQuery('⚠️ Noma’lum amal')
     }
