@@ -618,13 +618,15 @@ export const handleTransactionStatusChange = async (
     } else {
         if (status === 'reject') {
             await addUserBalance(transaction.user_id, transaction)
+        } else if (status === 'success_pay') {
+            send_message('info', transaction)
+
         }
     }
 
     transaction.status = status
     await transactionRepository.save(transaction)
 
-    send_message('info', transaction)
 
     return transaction
 }
