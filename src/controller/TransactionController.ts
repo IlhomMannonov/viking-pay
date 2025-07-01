@@ -517,7 +517,7 @@ export const deposit_withdraw_manual = async (req: AuthenticatedRequest, res: Re
             await manager.save(user);
             await manager.save(transaction);
 
-            send_message('info',transaction)
+            send_message('info', transaction)
         });
 
         res.status(201).send({message: `Deposit manual: ${amount}`, success: true});
@@ -547,12 +547,16 @@ export const accepting_transaction = async (req: AuthenticatedRequest, res: Resp
             if (status === "success_pay") {
                 await addUserBalance(transaction.user_id, transaction);
             }
+        } else {
+            if (status === "reject") {
+                await addUserBalance(transaction.user_id, transaction);
+            }
         }
         transaction.status = status;
 
         await transactionRepository.save(transaction);
 
-        send_message('info',transaction)
+        send_message('info', transaction)
         res.status(200).json({success: true, data: transaction, message: "Status updated successfully."});
 
     } catch (err) {

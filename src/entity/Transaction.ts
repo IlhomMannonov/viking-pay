@@ -56,7 +56,6 @@ export class Transaction extends BaseEntityUUID {
     type!: string;
 
 
-
     //TRUE BO'LSA KRIM BO'LADI, FALSE BO'LSA CHIQIM
     @Column({type: 'boolean', nullable: false, default: true})
     program!: boolean;

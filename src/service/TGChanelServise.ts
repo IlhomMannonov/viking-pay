@@ -110,6 +110,31 @@ function generateProviderMessage(data: {
 `
 }
 
+function generateWalletPendingMessage(data: {
+    program: boolean
+    amount: number
+    user_id: number
+    card_number: string
+    desc?: string
+}): string {
+    const { program, amount, user_id, card_number, desc } = data
+
+    const emoji = program ? '⏳📥' : '⏳📤'
+    const title = program
+        ? 'КИРИМ КУТИЛМОҚДА (ҳамён орқали)'
+        : 'ЧИҚИМ КУТИЛМОҚДА (ҳамён орқали)'
+
+    return `${emoji} ${title}
+
+👤 Фойдаланувчи ID: <code>${user_id}</code>
+💳 Карта рақами: <code>${card_number}</code>
+💸 Сумма: ${amount.toLocaleString('ru-RU')} сўм
+📝 Изоҳ: ${desc || '-'}
+
+⏳ Илтимос, операция якунланишини кутиб туринг...`
+}
+
+
 
 export const sendTelegramMessage = async (
     chat_id: string | number,
