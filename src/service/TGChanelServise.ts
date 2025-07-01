@@ -219,7 +219,7 @@ export const sendTelegramMessageAction = async (
                     },
                     {
                         text: "❌ Отмена",
-                        callback_data: "no" + id
+                        callback_data: "no:" + id
                     },
                 ]
             ]

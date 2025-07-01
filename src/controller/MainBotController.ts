@@ -130,6 +130,8 @@ export const setWebhook = (req: Request, res: Response) => {
 bot.on('callback_query', async (ctx: any) => {
     const data = ctx.callbackQuery.data;
     const id = data.split(':')[1]
+    console.log(data)
+    console.log(id)
     if (data.startsWith('ok:') || data.startsWith('no:')) {
 
         const status = data.split(':')[0]
