@@ -149,7 +149,7 @@ bot.on('callback_query', async (ctx: any) => {
                     [
                         Markup.button.url("🧾Подробнее", "https://google.com")
                     ]
-                ])
+                ]).reply_markup
             })
         }
     } else {
