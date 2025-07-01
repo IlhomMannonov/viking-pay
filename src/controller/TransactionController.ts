@@ -531,33 +531,10 @@ export const deposit_withdraw_manual = async (req: AuthenticatedRequest, res: Re
 // FUNKSIYA FAQAT HOMYONGA KIRIM CHIQIM TRANZAKSIYASINI TAMINLAYDI
 export const accepting_transaction = async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> => {
     try {
-        const {transaction_id, status} = req.body;
-        validFields(['transaction_id', 'status'], req.body);
+        const {transaction_id, status} = req.body
+        validFields(['transaction_id', 'status'], req.body)
 
-        const transaction = await transactionRepository.findOneBy({id: transaction_id, deleted: false, type: "wallet"});
-        if (!transaction) throw RestException.notFound(__('transaction.not_found'));
-
-
-        if (!['success_pay', 'reject'].includes(status)) {
-            throw RestException.badRequest("Type is invalid. Only ('success_pay', 'reject') allowed");
-        }
-
-        if (transaction.status !== "i_payed" && transaction.status !== "pending") throw RestException.notFound("Bu to'lovni qayta o'zgartira olmaysiz");
-
-        if (transaction.program) {
-            if (status === "success_pay") {
-                await addUserBalance(transaction.user_id, transaction);
-            }
-        } else {
-            if (status === "reject") {
-                await addUserBalance(transaction.user_id, transaction);
-            }
-        }
-        transaction.status = status;
-
-        await transactionRepository.save(transaction);
-
-        send_message('info', transaction)
+        const transaction = await handleTransactionStatusChange(transaction_id, status)
         res.status(200).json({success: true, data: transaction, message: "Status updated successfully."});
 
     } catch (err) {
@@ -613,4 +590,41 @@ async function makeAvailableCard(transaction: Transaction) {
     await cardRepository.save(card);
 
     logger.info(`${transaction.id} - Tranzaksiga ulangan karta:  ${card.number} - Yana aktivlashdi, Savdoda`);
+}
+
+export const handleTransactionStatusChange = async (
+    transaction_id: string,
+    status: 'success_pay' | 'reject'
+): Promise<Transaction> => {
+    const transaction = await transactionRepository.findOneBy({
+        id: transaction_id,
+        deleted: false,
+        type: 'wallet'
+    })
+    if (!transaction) throw RestException.notFound(__('transaction.not_found'))
+
+    if (!['success_pay', 'reject'].includes(status)) {
+        throw RestException.badRequest("Type is invalid. Only ('success_pay', 'reject') allowed")
+    }
+
+    if (!['i_payed', 'pending'].includes(transaction.status)) {
+        throw RestException.notFound("Bu to'lovni qayta o'zgartira olmaysiz")
+    }
+
+    if (transaction.program) {
+        if (status === 'success_pay') {
+            await addUserBalance(transaction.user_id, transaction)
+        }
+    } else {
+        if (status === 'reject') {
+            await addUserBalance(transaction.user_id, transaction)
+        }
+    }
+
+    transaction.status = status
+    await transactionRepository.save(transaction)
+
+    send_message('info', transaction)
+
+    return transaction
 }

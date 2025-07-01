@@ -126,7 +126,7 @@ function generateProviderMessage(data: {
 `
 }
 
-function generateWalletPendingMessage(data: {
+export function generateWalletPendingMessage(data: {
     program: boolean
     amount: number
     user_id: number
@@ -148,8 +148,7 @@ function generateWalletPendingMessage(data: {
 💸 Сумма: ${amount.toLocaleString('ru-RU')} сўм
 📝 Изоҳ: ${desc || '-'}
 🔻 Status: ${status || '-'}
-
-⏳ Илтимос, операция якунланишини кутиб туринг...`
+`
 }
 
 

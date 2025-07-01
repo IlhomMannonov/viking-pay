@@ -3,6 +3,8 @@ import {Request, Response} from 'express';
 import {AppDataSource} from "../config/db";
 import {User} from "../entity/User";
 import {Context} from "node:vm";
+import {handleTransactionStatusChange} from "./TransactionController";
+import {generateWalletPendingMessage} from "../service/TGChanelServise";
 
 const bot = new Telegraf('7958191913:AAFzyiOb4Xo9J9D1S2_X76WgECtbrfRWJjI');
 const userRepository = AppDataSource.getRepository(User);
@@ -125,12 +127,36 @@ export const setWebhook = (req: Request, res: Response) => {
 };
 
 
-bot.action(/^ok:\d+$/, async (ctx) => {
-    const data = ctx.text // masalan: "ok:8632856382"
-    // const [, id] = data.split(':')      // ['ok', '8632856382']
-    console.log('ID:', data)              // 8632856382
+bot.on('callback_query', async (ctx: any) => {
+    const data = ctx.callbackQuery.data;
+    const id = data.split(':')[1]
+    if (data.startsWith('ok:')) {
 
-    // ID bilan davom eting...
+        const trans = await handleTransactionStatusChange(id, 'success_pay')
+        if (trans) {
+            await ctx.answerCbQuery('✅ OK callback')
+            const txt = generateWalletPendingMessage({
+                program: trans.program,
+                amount: trans.amount,
+                user_id: trans.user_id,
+                card_number: trans.card_number,
+                desc: trans.desc,
+                status: trans.status,
+            })
+            await ctx.editMessageText(txt, {
+                reply_markup: Markup.inlineKeyboard([
+                    [
+                        Markup.button.url("🧾Подробнее", "https://t.me/VikingPaybot?startapp=start")
+                    ]
+                ])
+            })
+        }
+    } else if (data === 'no') {
+        await handleTransactionStatusChange(id, 'reject')
+        await ctx.answerCbQuery('❌ Bekor qilindi')
+    } else {
+        await ctx.answerCbQuery('⚠️ Noma’lum amal')
+    }
 })
 
 bot.launch();
