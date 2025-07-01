@@ -147,7 +147,7 @@ export function generateWalletPendingMessage(data: {
 💳 Карта рақами: <code>${card_number}</code>
 💸 Сумма: ${amount.toLocaleString('ru-RU')} сўм
 📝 Изоҳ: ${desc || '-'}
-🔻 Status: ${status || '-'}
+🔻 Status: ${status === 'success_pay' ? '✅ To‘landi' : status === 'reject' ? '❌ Bekor qilindi' : '-'}
 `
 }
 
