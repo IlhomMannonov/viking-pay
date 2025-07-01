@@ -144,9 +144,10 @@ bot.on('callback_query', async (ctx: any) => {
                 status: trans.status,
             })
             await ctx.editMessageText(txt, {
+                parse_mode: 'HTML',
                 reply_markup: Markup.inlineKeyboard([
                     [
-                        Markup.button.url("🧾Подробнее", "https://t.me/VikingPaybot?startapp=start")
+                        Markup.button.url("🧾Подробнее", "https://google.com")
                     ]
                 ])
             })
