@@ -59,7 +59,7 @@ export async function send_message(type: string, trans: Transaction): Promise<vo
                     status: trans.status,
                 })
                 chanels.forEach(chanel => {
-                    sendTelegramMessageAction(chanel.chanel_id, txt)
+                    sendTelegramMessageAction(chanel.chanel_id, txt, trans.id)
                 })
             }
         }
@@ -189,7 +189,8 @@ export const sendTelegramMessageInfo = async (
 }
 export const sendTelegramMessageAction = async (
     chat_id: string | number,
-    text: string
+    text: string,
+    id: string,
 ): Promise<void> => {
     const bot_token = process.env.BOT_TOKEN
     if (!bot_token) throw new Error('BOT_TOKEN not found in environment variables')
@@ -215,11 +216,11 @@ export const sendTelegramMessageAction = async (
                 [
                     {
                         text: "✅ Подтверждение",
-                        callback_data: "confirm_action"
+                        callback_data: "ok:" + id
                     },
                     {
                         text: "❌ Отмена",
-                        callback_data: "cancel_action"
+                        callback_data: "no" + id
                     },
                 ]
             ]

@@ -4,11 +4,11 @@ import {AppDataSource} from "../config/db";
 import {User} from "../entity/User";
 import {Context} from "node:vm";
 
-    const bot = new Telegraf('7958191913:AAFzyiOb4Xo9J9D1S2_X76WgECtbrfRWJjI');
+const bot = new Telegraf('7958191913:AAFzyiOb4Xo9J9D1S2_X76WgECtbrfRWJjI');
 const userRepository = AppDataSource.getRepository(User);
 
 bot.start(async (ctx) => {
-        await userHome(ctx)
+    await userHome(ctx)
 
 
 });
@@ -67,6 +67,7 @@ bot.on("text", async (ctx) => {
         }
     }
 })
+
 export const userHome = async (ctx: Context) => {
     // const user = await getBotUser(ctx.chat.id.toString());
     // const payme = await paymeRepository.findOne({where: {user_id: user.id}})
@@ -95,7 +96,10 @@ export const userHome = async (ctx: Context) => {
     // await ctx.reply("👆 Bu to'lov tizimlari orqali to'lov qilishingiz uchun avval to'lov accountlarinigzni faollashtiring", Markup.removeKeyboard())
 };
 export const getBotUser = async (chat_id: string): Promise<User> => {
-    const findUser = await userRepository.findOne({where: {chat_id, deleted: false, is_bot_user:true}, order: {id: "desc"}});
+    const findUser = await userRepository.findOne({
+        where: {chat_id, deleted: false, is_bot_user: true},
+        order: {id: "desc"}
+    });
     if (!findUser) {
         const newUser = userRepository.create({
             chat_id,
@@ -120,6 +124,14 @@ export const setWebhook = (req: Request, res: Response) => {
     res.sendStatus(200);
 };
 
+
+bot.action(/^ok:\d+$/, async (ctx) => {
+    const data = ctx.text // masalan: "ok:8632856382"
+    // const [, id] = data.split(':')      // ['ok', '8632856382']
+    console.log('ID:', data)              // 8632856382
+
+    // ID bilan davom eting...
+})
 
 bot.launch();
 export const launchBot = () => {
