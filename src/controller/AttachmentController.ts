@@ -1,13 +1,20 @@
 import {NextFunction, Request, Response} from "express";
 import multer, {MulterError} from 'multer';
 import path from 'path';
-import fs from 'fs';
+import fs, {promises as fsPromises} from 'fs';
 import {AppDataSource} from "../config/db";
 import {Attachment} from "../entity/Attachment";
 import {RestException} from "../middilwares/RestException";
 import axios from "axios";
+import {Transaction} from "../entity/Transaction";
+import {__} from "i18n";
+import ejs from 'ejs';
+import puppeteer from 'puppeteer';
+import {v4 as uuidv4} from 'uuid';
+
 
 const attachmentRepository = AppDataSource.getRepository(Attachment);
+const transactionRepository = AppDataSource.getRepository(Transaction);
 
 export const uploadFile = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     upload(req, res, async (err) => {
@@ -120,6 +127,55 @@ export const getFileById = async (req: Request, res: Response, next: NextFunctio
     }
 };
 
+export const download_chek = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+        const {transaction_id} = req.params;
+        const trans = await transactionRepository.findOne({
+            where: {id: transaction_id, deleted: false},
+            relations: ['user', 'provider']
+        });
+
+        if (!trans) throw RestException.notFound(__('transaction_not_found'));
+
+        const templatePath = "src/template/transaction.ejs";
+        const html = await ejs.renderFile(templatePath, {data: {...trans}}, {async: true});
+
+        const browser = await puppeteer.launch({
+            headless: true,
+            args: ['--no-sandbox', '--disable-setuid-sandbox']
+        });
+
+        const page = await browser.newPage();
+        await page.setContent(html, {waitUntil: "networkidle0"});
+
+        const fileName = `chek-${uuidv4()}.pdf`;
+        const filePath = `src/template/${fileName}`;
+        const contentHeight = await page.evaluate(() => {
+            const receipt = document.querySelector('.receipt')
+            return receipt ? receipt.scrollHeight : 500 // default fallback
+        })
+        await page.pdf({
+            path: filePath,
+            width: '350px',           // kvitansiya eni
+            height: `${contentHeight}px`, // real balandlik
+            printBackground: true
+        })
+        await browser.close();
+
+        res.download(filePath, fileName, async (err) => {
+            try {
+                await fsPromises.unlink(filePath); // vaqtinchalik faylni o‘chiramiz
+            } catch (unlinkErr) {
+                console.error("Faylni o‘chirishda xatolik:", unlinkErr);
+            }
+
+            if (err) next(err);
+        });
+
+    } catch (err) {
+        next(err);
+    }
+};
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {

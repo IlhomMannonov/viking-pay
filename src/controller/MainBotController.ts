@@ -177,7 +177,7 @@ bot.on('callback_query', async (ctx: any) => {
 })
 
 
-bot.launch();
+// bot.launch();
 export const launchBot = () => {
     console.log('Telegram bot started');
 };
