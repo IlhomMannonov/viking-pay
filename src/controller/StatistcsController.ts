@@ -6,6 +6,7 @@ import {Provider} from "../entity/Provider";
 import {Transaction} from "../entity/Transaction";
 import {validFields} from "../utils/CustomErrors";
 import {deposit} from "./TransactionProviderController";
+import {getRepository} from "typeorm";
 
 const userRepository = AppDataSource.getRepository(User);
 const transactionRepository = AppDataSource.getRepository(Transaction);
@@ -173,6 +174,69 @@ async function getAggregatedTransactionsOneUser(
     return await transactionRepository.query(rawQuery, [userId, program, type]);
 }
 
+
+export const in_out_statics = async (
+    req: AuthenticatedRequest,
+    res: Response,
+    next: NextFunction
+): Promise<void> => {
+    try {
+        let {from_date, to_date} = req.body;
+
+        const now = new Date();
+        const startOfToday = new Date(now.setHours(0, 0, 0, 0));
+        const endOfToday = new Date(now.setHours(23, 59, 59, 999));
+
+        const from = from_date ? new Date(from_date) : startOfToday;
+        const to = to_date ? new Date(to_date) : endOfToday;
+
+        const qb = transactionRepository
+            .createQueryBuilder('t')
+            .select(`COALESCE(SUM(CASE WHEN t.type = 'wallet' AND t.amount > 0 THEN t.amount ELSE 0 END), 0)`, 'wallet_in')
+            .addSelect(`COUNT(CASE WHEN t.type = 'wallet' AND t.amount > 0 THEN 1 ELSE NULL END)`, 'wallet_in_count')
+            .addSelect(`COALESCE(SUM(CASE WHEN t.type = 'wallet' AND t.amount < 0 THEN t.amount ELSE 0 END), 0)`, 'wallet_out')
+            .addSelect(`COUNT(CASE WHEN t.type = 'wallet' AND t.amount < 0 THEN 1 ELSE NULL END)`, 'wallet_out_count')
+            .addSelect(`COALESCE(SUM(CASE WHEN t.type = 'provider' AND t.amount > 0 THEN t.amount ELSE 0 END), 0)`, 'provider_in')
+            .addSelect(`COUNT(CASE WHEN t.type = 'provider' AND t.amount > 0 THEN 1 ELSE NULL END)`, 'provider_in_count')
+            .addSelect(`COALESCE(SUM(CASE WHEN t.type = 'provider' AND t.amount < 0 THEN t.amount ELSE 0 END), 0)`, 'provider_out')
+            .addSelect(`COUNT(CASE WHEN t.type = 'provider' AND t.amount < 0 THEN 1 ELSE NULL END)`, 'provider_out_count')
+            .where('t.status = :status', {status: 'success_pay'})
+            .andWhere('t.created_at BETWEEN :from AND :to', {from, to});
+
+        const data = await qb.getRawOne();
+        res.status(200).send(data);
+    } catch (err) {
+        next(err);
+    }
+};
+export const getProviderTransactionStats = async (
+    req: AuthenticatedRequest,
+    res: Response,
+    next: NextFunction
+): Promise<void> => {
+    try {
+        const data = await providerRepository
+            .createQueryBuilder('p')
+            .leftJoin('transaction', 't', 't.provider_id = p.id AND t.status = :status', { status: 'success_pay' })
+            .select('p.id', 'provider_id')
+            .addSelect('p.name', 'provider_name')
+            .addSelect('p.logo_id', 'logo_id')
+            .addSelect(`COALESCE(SUM(CASE WHEN t.type = 'wallet' AND t.amount > 0 THEN t.amount ELSE 0 END), 0)`, 'wallet_in')
+            .addSelect(`COUNT(CASE WHEN t.type = 'wallet' AND t.amount > 0 THEN 1 ELSE NULL END)`, 'wallet_in_count')
+            .addSelect(`COALESCE(SUM(CASE WHEN t.type = 'wallet' AND t.amount < 0 THEN t.amount ELSE 0 END), 0)`, 'wallet_out')
+            .addSelect(`COUNT(CASE WHEN t.type = 'wallet' AND t.amount < 0 THEN 1 ELSE NULL END)`, 'wallet_out_count')
+            .addSelect(`COALESCE(SUM(CASE WHEN t.type = 'provider' AND t.amount > 0 THEN t.amount ELSE 0 END), 0)`, 'provider_in')
+            .addSelect(`COUNT(CASE WHEN t.type = 'provider' AND t.amount > 0 THEN 1 ELSE NULL END)`, 'provider_in_count')
+            .addSelect(`COALESCE(SUM(CASE WHEN t.type = 'provider' AND t.amount < 0 THEN t.amount ELSE 0 END), 0)`, 'provider_out')
+            .addSelect(`COUNT(CASE WHEN t.type = 'provider' AND t.amount < 0 THEN 1 ELSE NULL END)`, 'provider_out_count')
+            .groupBy('p.id')
+            .getRawMany();
+
+        res.status(200).send(data);
+    } catch (err) {
+        next(err);
+    }
+};
 
 
 export const all_my_deposit_withdraws = async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> => {
