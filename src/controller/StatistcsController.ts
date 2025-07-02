@@ -126,26 +126,22 @@ async function getAggregatedTransactionsOneUser(
     let seriesSql: string;
     let truncExpr: string;
     let interval: string;
-    let step: string;
 
     switch (granularity) {
         case 'day':
             seriesSql = `generate_series(CURRENT_DATE - INTERVAL '29 days', CURRENT_DATE, '1 day')`;
             truncExpr = 't.created_at::date';
             interval = '30 days';
-            step = '1 day';
             break;
         case 'week':
             seriesSql = `generate_series(date_trunc('week', CURRENT_DATE) - INTERVAL '3 weeks', date_trunc('week', CURRENT_DATE), '1 week')`;
             truncExpr = `date_trunc('week', t.created_at)::date`;
             interval = '4 weeks';
-            step = '1 week';
             break;
         case 'year':
             seriesSql = `generate_series(date_trunc('year', CURRENT_DATE) - INTERVAL '3 years', date_trunc('year', CURRENT_DATE), '1 year')`;
             truncExpr = `date_trunc('year', t.created_at)::date`;
             interval = '4 years';
-            step = '1 year';
             break;
         default:
             throw new Error('Invalid granularity');
@@ -157,7 +153,8 @@ async function getAggregatedTransactionsOneUser(
     )
     SELECT
       d.period,
-      COALESCE(SUM(t.amount), 0) AS amount
+      COALESCE(SUM(t.amount), 0) AS amount,
+      COUNT(t.id) AS count
     FROM dates d
     LEFT JOIN transaction t
       ON (
@@ -175,6 +172,7 @@ async function getAggregatedTransactionsOneUser(
 
     return await transactionRepository.query(rawQuery, [userId, program, type]);
 }
+
 
 
 export const all_my_deposit_withdraws = async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> => {
