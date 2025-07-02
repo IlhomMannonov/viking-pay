@@ -45,7 +45,6 @@ app.use('/api/v1/user', userRouter);
 app.use('/api/v1/tg-account', telegramAccountRouter);
 app.use('/api/v1/tr-provider', transactionProviderRouter);
 app.use('/api/v1/file', fileRouter);
-app.use('/chek', fileRouter);
 app.use('/api/v1/role-permission', rolePermissionRouter);
 app.use('/api/v1/slider', sliderRouter);
 app.use('/api/v1/statics', statisticsRouter);

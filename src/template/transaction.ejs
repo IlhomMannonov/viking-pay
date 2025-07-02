@@ -156,17 +156,17 @@
             <div class="label">Пользователь</div>
             <div class="value"><%= data.user.first_name + ' ' + data.user.last_name %></div>
         </div>
-        <div class="line">
-            <div class="label">ID Пользователь</div>
-            <div class="value"><%= data.user.id %></div>
-        </div>
+
         <% if (data.type === 'wallet') { %>
             <div class="line">
                 <div class="label">Номер карты</div>
                 <div class="value"><%= data.card_number %></div>
             </div>
         <% } %>
-
+        <div class="line">
+            <div class="label">Описание</div>
+            <div class="value"><%= data.desc %></div>
+        </div>
         <div class="line">
             <div class="label">Дата транзакции</div>
             <div class="value"><%= formatDate(data.created_at) %></div>
