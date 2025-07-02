@@ -167,7 +167,7 @@ bot.on('callback_query', async (ctx: any) => {
 
             await ctx.editMessageReplyMarkup(
                 Markup.inlineKeyboard([
-                    [Markup.button.url('🧾Подробнее', 'https://google.com')]
+                    [Markup.button.url('🧾Подробнее', process.env.WEB_ERL + "/receipt-view/" + id)]
                 ]).reply_markup
             )
         }
@@ -177,7 +177,7 @@ bot.on('callback_query', async (ctx: any) => {
 })
 
 
-// bot.launch();
+bot.launch();
 export const launchBot = () => {
     console.log('Telegram bot started');
 };

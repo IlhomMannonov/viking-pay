@@ -41,7 +41,7 @@ export async function send_message(type: string, trans: Transaction): Promise<vo
             })
         }
         chanels.forEach(chanel => {
-            sendTelegramMessageInfo(chanel.chanel_id, text)
+            sendTelegramMessageInfo(chanel.chanel_id, text, trans.id)
 
         })
 
@@ -154,7 +154,8 @@ export function generateWalletPendingMessage(data: {
 
 export const sendTelegramMessageInfo = async (
     chat_id: string | number,
-    text: string
+    text: string,
+    id: string
 ): Promise<void> => {
     const bot_token = process.env.BOT_TOKEN
     if (!bot_token) throw new Error('BOT_TOKEN not found in environment variables')
@@ -174,7 +175,7 @@ export const sendTelegramMessageInfo = async (
                 [
                     {
                         text: "🧾Подробнее",
-                        url: "https://google.com"
+                        url: process.env.WEB_ERL + "/receipt-view/" + id
                     }
                 ]
             ]
@@ -209,7 +210,7 @@ export const sendTelegramMessageAction = async (
                 [
                     {
                         text: "🧾Подробнее",
-                        url: "https://google.com"
+                        url: process.env.WEB_ERL + "/receipt-view/" + id
                     },
                 ],
                 [

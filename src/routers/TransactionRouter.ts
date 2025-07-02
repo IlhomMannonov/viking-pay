@@ -5,7 +5,7 @@ import {
     complete_pay,
     create_deposit,
     deposit_withdraw_manual,
-    get_my_transaction,
+    get_my_transaction, get_transaction,
     my_transactions,
     update_transaction,
     withdraw_balance
@@ -42,6 +42,9 @@ router.route("/deposit/manual")
 // ADMIN
 router.route("/accepting")
     .post(verifyJwtToken('accept-reject-transaction'), accepting_transaction)
+
+router.route("/view/:trans_id")
+    .get(get_transaction)
 
 
 export default router;

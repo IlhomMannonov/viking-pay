@@ -581,6 +581,30 @@ export async function removeUserBalanceAmount(user_id: number, transaction: Tran
 
 }
 
+export const get_transaction = async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> => {
+    try {
+        const trans_id = req.params.trans_id;
+
+        //FAQAT O'ZINI TRANZAKSIYASINI CHAQIRADI
+        const trans = await transactionRepository.findOne({
+            where: {
+                id: trans_id,
+                deleted: false,
+            },
+            relations: ['provider','user']
+        });
+        if (!trans) throw RestException.notFound(__('transaction.not_found'));
+
+
+        (trans as any).timer = getTransTime(trans);
+
+        res.status(200).send({success: true, data: trans});
+
+    } catch (err) {
+        next(err)
+    }
+}
+
 async function makeAvailableCard(transaction: Transaction) {
     //     TRANSAKSIYAGA ULANGAN KARTANI AKTIVLASHTIRIB QO'YAMIZ
     const card = await cardRepository.findOne({where: {id: transaction.card_id, deleted: false, is_user_card: false}});
