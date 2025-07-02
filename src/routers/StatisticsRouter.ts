@@ -1,8 +1,10 @@
 import {Router} from "express";
 import {verifyJwtToken} from "../middilwares/Security";
 import {
-    all_my_deposit_withdraws, getProviderTransactionStats,
-    in_out_statics,
+    all_my_deposit_withdraws,
+    getProviderTransactionStats,
+    getTopDepositUsersDetailed,
+    in_out_statics, main_chart,
     user_chart_statics,
     user_main_statics
 } from "../controller/StatistcsController";
@@ -19,16 +21,18 @@ router.route("/my-deposits-withdraws")
     .get(verifyJwtToken(), all_my_deposit_withdraws);
 
 router.route("/user-statics/:user_id")
-    .get(verifyJwtToken('see-user-chart'), user_chart_statics);
+    .get(verifyJwtToken('view-statistics'), user_chart_statics);
+
+router.route("/main-statics")
+    .get(verifyJwtToken('view-statistics'), main_chart);
 
 router.route("/in-out")
-    .get(verifyJwtToken('see-user-chart'), in_out_statics);
-
-router.route("/in-out")
-    .get(verifyJwtToken('see-user-chart'), in_out_statics);
+    .post(verifyJwtToken('view-statistics'), in_out_statics);
 
 router.route("/provider-statics")
-    .get(verifyJwtToken('see-user-chart'), getProviderTransactionStats);
+    .post(verifyJwtToken('view-statistics'), getProviderTransactionStats);
+router.route("/top-users")
+    .post(verifyJwtToken('view-statistics'), getTopDepositUsersDetailed);
 
 
 export default router;
