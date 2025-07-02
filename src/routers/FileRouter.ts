@@ -14,6 +14,6 @@ router.route("/get/:id")
 router.route("/get-id/:id")
     .get(getFileById);
 
-router.route("/download-chek/:transaction_id")
+router.route("/download/:transaction_id")
     .get(download_chek);
 export default router;
