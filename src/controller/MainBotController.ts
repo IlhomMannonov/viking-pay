@@ -154,7 +154,7 @@ bot.on('callback_query', async (ctx: any) => {
                 await ctx.editMessageText(txt, {
                     parse_mode: 'HTML',
                     reply_markup: Markup.inlineKeyboard([
-                        [Markup.button.url('🧾Подробнее', 'https://google.com')]
+                        [Markup.button.url('🧾Подробнее', process.env.WEB_ERL + "/receipt-view/" + id)]
                     ]).reply_markup
                 })
             }
