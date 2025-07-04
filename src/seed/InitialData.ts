@@ -21,7 +21,6 @@ export const seedInitialData = async (dataSource: DataSource) => {
             children: [
                 { name: "Транзакция кошелька", order_index: 2, route: "wallet-transaction" ,unique_key:"wallet-transaction" },
                 { name: "Транзакция провайдера", order_index: 3, route: "provider-transaction" ,unique_key:"provider-transaction" },
-                { name: "Настройки оплаты", order_index: 4, route: "payment-settings",unique_key:"payment-settings" },
             ],
         },
         {
@@ -71,7 +70,6 @@ export const seedInitialData = async (dataSource: DataSource) => {
             children:[
                 { name: "Пользователи", order_index: 1, route: "staff-users" ,unique_key:"staff-users" },
                 { name: "Роли", order_index: 2, route: "roles", unique_key:"roles" },
-                { name: "Разрешение", order_index: 4, route: "permissions", unique_key:"permissions" },
 
             ]
         },
@@ -173,6 +171,9 @@ export const seedPermissions = async (dataSource: DataSource) => {
         { name: "delete-staff-user", desc: "Ҳодим яратиш", module_key: "staff-users" },
         { name: "see-staff-user", desc: "Ҳодимлар рўйхатини кўриш", module_key: "staff-users" },
         { name: "update-staff-user", desc: "Ҳодимни тахрирлаш", module_key: "staff-users" },
+
+
+        { name: "view-statistics", desc: "Посмотреть статистику", module_key: "reports" },
     ]
 
 
